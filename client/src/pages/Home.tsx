@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Video, Globe, Shield, MessageSquare, Zap, Twitter, Github, Mail } from "lucide-react";
+import { Link } from "wouter";
 import { useState, useRef } from "react";
 
 export default function Home() {
@@ -147,9 +148,9 @@ export default function Home() {
               <span className="text-foreground font-bold">OmeClone</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#" className="hover:text-primary transition-colors">Safety</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
-              <a href="#" className="hover:text-primary transition-colors">Privacy</a>
+              <Link href="/info?tab=safety" className="hover:text-primary transition-colors">Safety</Link>
+              <Link href="/info?tab=terms" className="hover:text-primary transition-colors">Terms</Link>
+              <Link href="/info?tab=privacy" className="hover:text-primary transition-colors">Privacy</Link>
             </div>
             <div className="text-muted-foreground/60">
               © 2026 OmeClone
@@ -168,23 +169,23 @@ export default function Home() {
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Product</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="#" className="hover:text-primary transition-colors">How it works</a></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Safety measures</a></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">How it works</Link></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Features</Link></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Safety measures</Link></li>
                   </ul>
                 </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Resources</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Guidelines</a></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Help Center</Link></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Guidelines</Link></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Blog</Link></li>
                   </ul>
                 </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Company</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
+                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">About Us</Link></li>
                     <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
                     <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
                   </ul>
