@@ -54,7 +54,7 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-1 mr-2">
               {[
                 { label: "Home", href: "/" },
@@ -64,8 +64,8 @@ export function Header() {
                   <div
                     className={`px-8 py-3 rounded-full text-base font-semibold transition-all duration-300 cursor-pointer ${
                       location === item.href
-                        ? "bg-white/10 text-white"
-                        : "text-white/40 hover:text-white hover:bg-white/5"
+                        ? "bg-foreground/[0.08] text-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.03]"
                     }`}
                   >
                     {item.label}
