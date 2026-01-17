@@ -4,9 +4,10 @@ import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff, MessageCircle } from "lucide-react";
+import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff, MessageCircle, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
@@ -77,9 +78,42 @@ export default function Chat() {
           <span className="font-bold text-foreground text-lg tracking-tight">Ome<span className="text-primary">Clone</span></span>
         </div>
         
-        <div className="flex items-center gap-2 text-sm">
-          <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <span className="text-muted-foreground font-medium">{onlineCount.toLocaleString()}+ Online</span>
+        <div className="flex items-center gap-4">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/50" title="Keyboard Shortcuts">
+                <Keyboard className="w-4 h-4 text-muted-foreground" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Keyboard Shortcuts</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">New / Next Chat</span>
+                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">ENTER</kbd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Stop Chat</span>
+                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">ESC</kbd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Toggle Microphone</span>
+                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">M</kbd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Toggle Camera</span>
+                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">V</kbd>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <div className="flex items-center gap-2 text-sm">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+            <span className="text-muted-foreground font-medium">{onlineCount.toLocaleString()}+ Online</span>
+          </div>
         </div>
       </div>
 
