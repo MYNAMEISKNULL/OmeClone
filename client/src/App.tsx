@@ -7,6 +7,9 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
 import Info from "@/pages/Info";
+import Safety from "@/pages/support/Safety";
+import Feedback from "@/pages/support/Feedback";
+import Contact from "@/pages/support/Contact";
 
 function Router() {
   return (
@@ -14,6 +17,9 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/chat" component={Chat} />
       <Route path="/info" component={Info} />
+      <Route path="/safety" component={Safety} />
+      <Route path="/feedback" component={Feedback} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );

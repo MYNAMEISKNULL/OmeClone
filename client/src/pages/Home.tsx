@@ -3,12 +3,28 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Video, Globe, Shield, MessageSquare, Zap, Twitter, Github, Mail } from "lucide-react";
 import { Link } from "wouter";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [isFooterHovered, setIsFooterHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (footerRef.current && !footerRef.current.contains(event.target as Node)) {
+        setIsFooterHovered(false);
+      }
+    };
+
+    if (isFooterHovered) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFooterHovered]);
 
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -19,7 +35,6 @@ export default function Home() {
 
   const handleMouseLeave = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    setIsFooterHovered(false);
   };
 
   return (
@@ -129,6 +144,7 @@ export default function Home() {
       {/* Thin Sleek Footer with Hover Expansion as Overlay */}
       <div className="h-16 shrink-0" /> {/* Spacer for the fixed footer base */}
       <motion.footer 
+        ref={footerRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         initial={{ height: "64px" }}
@@ -143,7 +159,7 @@ export default function Home() {
               <span className="text-foreground font-bold">OmeClone</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/info?tab=safety" className="hover:text-primary transition-colors">Safety</Link>
+              <Link href="/safety" className="hover:text-primary transition-colors">Safety</Link>
               <Link href="/info?tab=terms" className="hover:text-primary transition-colors">Terms</Link>
               <Link href="/info?tab=privacy" className="hover:text-primary transition-colors">Privacy</Link>
             </div>
@@ -164,25 +180,25 @@ export default function Home() {
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Product</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">How it works</Link></li>
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Features</Link></li>
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Safety measures</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">How it works</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">Features</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">Safety measures</Link></li>
                   </ul>
                 </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Resources</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Help Center</Link></li>
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Guidelines</Link></li>
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">Blog</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">Help Center</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">Guidelines</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">Blog</Link></li>
                   </ul>
                 </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Company</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">About Us</Link></li>
-                    <li><Link href="/info?tab=feedback" className="hover:text-primary transition-colors">Feedback</Link></li>
-                    <li><Link href="/info?tab=contact" className="hover:text-primary transition-colors">Contact</Link></li>
+                    <li><Link href="/safety" className="hover:text-primary transition-colors">About Us</Link></li>
+                    <li><Link href="/feedback" className="hover:text-primary transition-colors">Feedback</Link></li>
+                    <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
                   </ul>
                 </div>
                 <div className="space-y-4">
