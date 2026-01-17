@@ -32,6 +32,40 @@ export default function Chat() {
   const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts if user is typing in an input or textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        if (e.key === 'Escape') {
+          (e.target as HTMLElement).blur();
+        }
+        return;
+      }
+
+      switch (e.key.toLowerCase()) {
+        case 'escape':
+          if (chatState !== 'idle') stopChat();
+          break;
+        case 'enter':
+          if (chatState === 'idle') {
+            startChat();
+          } else {
+            nextPartner();
+          }
+          break;
+        case 'm':
+          toggleAudio();
+          break;
+        case 'v':
+          toggleVideo();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo]);
+
+  useEffect(() => {
     startChat();
   }, []);
 
@@ -104,6 +138,7 @@ export default function Chat() {
                   variant={isAudioEnabled ? "secondary" : "destructive"}
                   onClick={toggleAudio}
                   className="rounded-full w-10 h-10"
+                  title="Shortcut: M"
                 >
                   {isAudioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
                 </Button>
@@ -112,6 +147,7 @@ export default function Chat() {
                   variant={isVideoEnabled ? "secondary" : "destructive"}
                   onClick={toggleVideo}
                   className="rounded-full w-10 h-10"
+                  title="Shortcut: V"
                 >
                   {isVideoEnabled ? <Camera className="w-5 h-5" /> : <CameraOff className="w-5 h-5" />}
                 </Button>
@@ -129,8 +165,9 @@ export default function Chat() {
                 data-testid="button-start"
                 onClick={startChat}
                 className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
+                title="Shortcut: Enter"
               >
-                START
+                START <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
               </Button>
             ) : (
               <>
@@ -139,15 +176,18 @@ export default function Chat() {
                   variant="destructive"
                   onClick={stopChat}
                   className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
+                  title="Shortcut: Esc"
                 >
-                  STOP
+                  STOP <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ESC)</span>
                 </Button>
                 <Button 
                   data-testid="button-next"
                   onClick={nextPartner}
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
+                  title="Shortcut: Enter"
                 >
                   {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
+                  <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
                 </Button>
               </>
             )}
