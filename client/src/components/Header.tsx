@@ -33,14 +33,14 @@ export function Header() {
         initial={false}
         style={{ originX: 0.5 }}
         animate={{
-          width: menuOpen ? (menuExpanded ? 720 : 540) : 420,
+          width: menuOpen ? (menuExpanded ? (window.innerWidth < 640 ? "100%" : 720) : (window.innerWidth < 640 ? "90%" : 540)) : (window.innerWidth < 640 ? "85%" : 420),
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
           width: { type: "spring", stiffness: 300, damping: 30 },
           height: { type: "spring", stiffness: 300, damping: 30 }
         }}
-        className="bg-card/80 backdrop-blur-xl border border-border shadow-2xl rounded-3xl pointer-events-auto overflow-hidden flex flex-col"
+        className="bg-card/80 backdrop-blur-xl border border-border shadow-2xl rounded-3xl pointer-events-auto overflow-hidden flex flex-col max-w-full"
       >
         <div className="h-16 flex items-center justify-between px-6 shrink-0">
           <div className="flex items-center gap-3">

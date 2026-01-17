@@ -40,8 +40,11 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
     <div className={cn("flex flex-col h-full bg-card", className)}>
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-border"
+        className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none md:scrollbar-thin scrollbar-thumb-border"
       >
+        <div className="text-muted-foreground mb-6 text-center py-2 px-3 bg-muted/30 rounded-lg text-xs md:text-sm">
+          You're connected to a stranger. Say hello!
+        </div>
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -52,7 +55,7 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
           >
             <div
               className={cn(
-                "px-3 py-2 rounded-2xl text-sm leading-relaxed break-words shadow-sm",
+                "px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words shadow-sm",
                 msg.isLocal 
                   ? "bg-primary text-primary-foreground rounded-tr-none" 
                   : "bg-muted text-foreground rounded-tl-none border border-border"
@@ -61,13 +64,13 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
               {msg.text}
             </div>
             <span className="text-[10px] text-muted-foreground mt-1 px-1">
-              {msg.isLocal ? "You" : "Stranger"}
+              {msg.isLocal ? "You" : "Stranger"} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-card/50 backdrop-blur-sm">
+      <form onSubmit={handleSubmit} className="p-3 md:p-4 border-t border-border bg-card/50 backdrop-blur-sm shrink-0">
         <div className="flex gap-2">
           <Input
             data-testid="input-chat"
@@ -75,14 +78,15 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Type a message..."
             disabled={disabled}
-            className="rounded-xl bg-background border-border focus-visible:ring-primary/20"
+            autoComplete="off"
+            className="rounded-xl bg-background border-border focus-visible:ring-primary/20 h-10 md:h-11"
           />
           <Button 
             data-testid="button-send"
             type="submit" 
             size="icon" 
             disabled={disabled || !inputValue.trim()}
-            className="rounded-xl shrink-0 transition-all active:scale-95"
+            className="rounded-xl shrink-0 transition-all active:scale-95 h-10 w-10 md:h-11 md:w-11"
           >
             <Send className="w-4 h-4" />
           </Button>

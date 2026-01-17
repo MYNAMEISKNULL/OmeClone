@@ -30,7 +30,7 @@ export default function Chat() {
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
       {/* Top Bar */}
-      <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50">
+      <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
         <div className="flex items-center gap-2">
           <span className="font-bold text-foreground text-lg tracking-tight">Ome<span className="text-primary">Clone</span></span>
         </div>
@@ -41,12 +41,12 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="flex-1 flex min-h-0 bg-background">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden">
         {/* Main Video Area */}
-        <div className="flex-1 flex flex-col min-w-0">
-          <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0">
+        <div className="flex-1 flex flex-col min-w-0 min-h-0">
+          <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden">
             {/* Remote Video */}
-            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center">
+            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center h-[40vh] md:h-full">
               <VideoDisplay 
                 stream={remoteStream} 
                 className="w-full h-full object-cover"
@@ -64,7 +64,7 @@ export default function Chat() {
             </div>
 
             {/* Local Video */}
-            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center">
+            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center h-[40vh] md:h-full">
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
@@ -77,7 +77,7 @@ export default function Chat() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4">
+          <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4 shrink-0">
             <Button 
               data-testid="button-stop"
               variant="destructive"
@@ -85,14 +85,14 @@ export default function Chat() {
                 stopChat();
                 setLocation('/');
               }}
-              className="h-12 px-8 font-bold rounded-lg uppercase tracking-wider"
+              className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
             >
               STOP
             </Button>
             <Button 
               data-testid="button-next"
               onClick={nextPartner}
-              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-base shadow-lg shadow-primary/20"
+              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
             >
               {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
             </Button>
@@ -100,18 +100,13 @@ export default function Chat() {
         </div>
 
         {/* Sidebar Chat */}
-        <div className="w-80 border-l border-border flex flex-col bg-card">
-          <div className="p-4 flex-1 overflow-y-auto text-sm">
-            <div className="text-muted-foreground mb-4 text-center py-2 px-3 bg-muted/30 rounded-lg">
-              You're connected to a stranger. Say hello!
-            </div>
-            <ChatBox 
-              messages={messages} 
-              onSendMessage={sendMessage} 
-              disabled={chatState !== 'connected'} 
-              className="h-full border-none bg-transparent"
-            />
-          </div>
+        <div className="w-full md:w-80 h-1/3 md:h-full border-t md:border-t-0 md:border-l border-border flex flex-col bg-card shrink-0">
+          <ChatBox 
+            messages={messages} 
+            onSendMessage={sendMessage} 
+            disabled={chatState !== 'connected'} 
+            className="flex-1 border-none bg-transparent min-h-0"
+          />
         </div>
       </div>
 

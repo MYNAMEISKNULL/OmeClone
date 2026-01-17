@@ -42,11 +42,11 @@ export default function Home() {
               <Zap className="w-4 h-4 fill-current" />
               <span>Instant matching, no login required</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground">
+            <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground">
               Talk to strangers, <br />
               <span className="text-primary">instantly.</span>
             </h1>
-            <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Experience the next generation of anonymous video chat. Simple, fast, and secure. Connect with people from all over the world in seconds.
             </p>
           </motion.div>
@@ -55,13 +55,13 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 w-full px-4"
           >
             <Button 
               size="lg"
               data-testid="button-start-chat"
               onClick={() => setLocation('/chat')}
-              className="h-16 px-10 rounded-2xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group"
+              className="w-full sm:w-auto h-16 px-10 rounded-2xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group"
             >
               <Video className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
               START VIDEO CHAT
@@ -69,7 +69,7 @@ export default function Home() {
             <Button 
               variant="outline"
               size="lg"
-              className="h-16 px-10 rounded-2xl text-lg font-bold border-border hover:bg-muted transition-all"
+              className="w-full sm:w-auto h-16 px-10 rounded-2xl text-lg font-bold border-border hover:bg-muted transition-all"
             >
               LEARN MORE
             </Button>
@@ -79,7 +79,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-8 pt-8 text-sm font-medium text-muted-foreground"
+            className="flex flex-wrap items-center justify-center gap-4 md:gap-8 pt-8 text-sm font-medium text-muted-foreground"
           >
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4" />
