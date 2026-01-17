@@ -19,14 +19,18 @@ function Router() {
 
 import { Header } from "@/components/Header";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider delayDuration={0}>
-        <Header />
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="nexus-theme">
+        <TooltipProvider delayDuration={0}>
+          <Header />
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

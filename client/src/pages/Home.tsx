@@ -38,7 +38,7 @@ export default function Home() {
             <Link href="/chat">
               <Button 
                 size="lg" 
-                className="h-16 px-10 rounded-full text-xl font-medium bg-white text-black hover:bg-white/90 hover:scale-105 transition-all duration-500 shadow-2xl shadow-white/5 active:scale-95"
+                className="h-16 px-10 rounded-full text-xl font-medium bg-primary text-primary-foreground hover:opacity-90 hover:scale-105 transition-all duration-500 shadow-2xl active:scale-95"
               >
                 Start Video Chat
                 <ArrowRight className="ml-3 w-6 h-6" />

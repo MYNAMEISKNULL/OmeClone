@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Video, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Header() {
   const [location] = useLocation();
@@ -44,10 +45,10 @@ export function Header() {
         <div className="h-16 px-6 flex items-center justify-between gap-12">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:rotate-12 transition-all duration-500">
-                <Video className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-12 transition-all duration-500">
+                <Video className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-display font-bold text-2xl tracking-tight text-white group-hover:opacity-80 transition-opacity">
+              <span className="font-display font-bold text-2xl tracking-tight text-foreground group-hover:opacity-80 transition-opacity">
                 Nexus
               </span>
             </div>
@@ -73,11 +74,13 @@ export function Header() {
               ))}
             </div>
 
+            <ThemeToggle />
+
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleMenu}
-              className="rounded-full w-12 h-12 hover:bg-white/5 text-white/40 hover:text-white transition-all active:scale-90"
+              className="rounded-full w-12 h-12 hover:bg-foreground/5 text-foreground/40 hover:text-foreground transition-all active:scale-90"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -101,9 +104,9 @@ export function Header() {
                   { label: "Support", href: "#", desc: "Get help from our team" },
                 ].map((item) => (
                   <Link key={item.label} href={item.href}>
-                    <div className="p-6 rounded-[2rem] bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all duration-500 cursor-pointer group relative overflow-hidden">
-                      <div className="font-semibold text-lg text-white group-hover:text-cyan-400 transition-colors">{item.label}</div>
-                      <div className="text-sm text-white/40 mt-1">{item.desc}</div>
+                    <div className="p-6 rounded-[2rem] bg-foreground/[0.03] hover:bg-foreground/[0.08] border border-border/50 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                      <div className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">{item.label}</div>
+                      <div className="text-sm text-muted-foreground mt-1">{item.desc}</div>
                     </div>
                   </Link>
                 ))}
