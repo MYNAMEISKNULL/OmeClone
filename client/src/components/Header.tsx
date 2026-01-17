@@ -29,13 +29,13 @@ export function Header() {
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-full px-4 flex justify-center pointer-events-none">
       <motion.div
         animate={{
-          width: menuOpen ? (menuExpanded ? 400 : 320) : 220,
+          width: menuOpen ? (menuExpanded ? 600 : 450) : 320,
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
           type: "spring",
-          stiffness: 260,
-          damping: 20,
+          stiffness: 200,
+          damping: 24,
         }}
         className="floating-card rounded-[2rem] shadow-2xl overflow-hidden pointer-events-auto w-full max-w-fit"
       >
