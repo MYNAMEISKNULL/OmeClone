@@ -8,6 +8,7 @@ import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff, MessageCircl
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
@@ -79,36 +80,36 @@ export default function Chat() {
         </div>
         
         <div className="flex items-center gap-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/50" title="Keyboard Shortcuts">
-                <Keyboard className="w-4 h-4 text-muted-foreground" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Keyboard Shortcuts</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">New / Next Chat</span>
-                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">ENTER</kbd>
+          <TooltipProvider>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/50">
+                  <Keyboard className="w-4 h-4 text-muted-foreground" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="w-64 p-4" align="end">
+                <div className="grid gap-3">
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Keyboard Shortcuts</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">New / Next Chat</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">ENTER</kbd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">Stop Chat</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">ESC</kbd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">Toggle Microphone</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">M</kbd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">Toggle Camera</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">V</kbd>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Stop Chat</span>
-                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">ESC</kbd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Toggle Microphone</span>
-                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">M</kbd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Toggle Camera</span>
-                  <kbd className="px-2 py-1 rounded bg-muted text-xs font-mono border border-border shadow-sm">V</kbd>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           <div className="flex items-center gap-2 text-sm">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
