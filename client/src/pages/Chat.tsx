@@ -136,10 +136,13 @@ export default function Chat() {
                       <span className="text-sm font-bold text-primary animate-bounce">PRESS START TO FIND STRANGER</span>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center gap-4 text-muted-foreground/30">
-                      <div className="w-16 h-16 border-2 border-border rounded-xl flex items-center justify-center">
-                        <VideoIcon className="w-8 h-8" />
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#00f2ff] animate-bounce-custom [animation-delay:-0.32s]" />
+                        <div className="w-3 h-3 rounded-full bg-[#bc13fe] animate-bounce-custom [animation-delay:-0.16s]" />
+                        <div className="w-3 h-3 rounded-full bg-[#ff0055] animate-bounce-custom" />
                       </div>
+                      <span className="text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</span>
                     </div>
                   )
                 }
@@ -241,16 +244,7 @@ export default function Chat() {
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                   title="Shortcut: Enter"
                 >
-                  {chatState === 'waiting' ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex gap-1.5 mr-2">
-                        <div className="w-2 h-2 rounded-full bg-[#00f2ff] animate-bounce-custom [animation-delay:-0.32s]" />
-                        <div className="w-2 h-2 rounded-full bg-[#bc13fe] animate-bounce-custom [animation-delay:-0.16s]" />
-                        <div className="w-2 h-2 rounded-full bg-[#ff0055] animate-bounce-custom" />
-                      </div>
-                      FINDING STRANGER...
-                    </div>
-                  ) : 'NEW STRANGER'}
+                  {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
                   <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
                 </Button>
               </>
