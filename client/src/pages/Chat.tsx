@@ -5,7 +5,7 @@ import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { Controls } from "@/components/Controls";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Loader2, Video } from "lucide-react";
+import { Loader2, Video as VideoIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
@@ -64,7 +64,7 @@ export default function Chat() {
                 className="w-full h-full object-cover"
                 placeholder={<div className="flex flex-col items-center gap-4 text-white/20">
                   <div className="w-16 h-16 border-2 border-white/10 rounded-xl flex items-center justify-center">
-                    <Video className="w-8 h-8" />
+                    <VideoIcon className="w-8 h-8" />
                   </div>
                 </div>}
               />

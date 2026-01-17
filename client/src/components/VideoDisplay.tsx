@@ -7,7 +7,7 @@ interface VideoDisplayProps {
   isLocal?: boolean;
   className?: string;
   muted?: boolean;
-  placeholder?: string;
+  placeholder?: React.ReactNode;
 }
 
 export function VideoDisplay({ 
@@ -43,7 +43,7 @@ export function VideoDisplay({
           <div className="p-4 rounded-full bg-background/50 mb-3 animate-pulse">
             {isLocal ? <VideoOff className="w-8 h-8" /> : <User className="w-12 h-12" />}
           </div>
-          <p className="text-sm font-medium animate-pulse">{placeholder}</p>
+          <div className="text-sm font-medium animate-pulse">{placeholder}</div>
         </div>
       )}
       
