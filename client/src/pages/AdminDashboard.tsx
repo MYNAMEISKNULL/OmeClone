@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Report, Feedback } from "@shared/schema";
+import type { Report, Feedback } from "@shared/schema";
 import { format } from "date-fns";
 import { Shield, MessageSquare, Clock } from "lucide-react";
 

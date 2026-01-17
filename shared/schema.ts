@@ -12,6 +12,9 @@ export const insertReportSchema = createInsertSchema(reports).pick({
   reason: true,
 });
 
+export type Report = typeof reports.$inferSelect;
+export type InsertReport = z.infer<typeof insertReportSchema>;
+
 export const feedback = pgTable("feedback", {
   id: serial("id").primaryKey(),
   rating: text("rating").notNull(),
