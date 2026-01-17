@@ -126,12 +126,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Thin Sleek Footer with Hover Expansion */}
+      {/* Thin Sleek Footer with Hover Expansion as Overlay */}
+      <div className="h-16 shrink-0" /> {/* Spacer for the fixed footer base */}
       <motion.footer 
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        initial={{ height: "64px" }}
         animate={{ height: isFooterHovered ? "auto" : "64px" }}
-        className="border-t border-border bg-card/50 backdrop-blur-md shrink-0 transition-colors hover:bg-card/80 overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 border-t border-border bg-card/80 backdrop-blur-md z-[100] transition-colors hover:bg-card/95 overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
       >
         <div className="max-w-7xl mx-auto px-6">
           {/* Main Footer Row (Always Visible) */}
