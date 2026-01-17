@@ -1,27 +1,27 @@
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Video, Shield, Zap, Globe, MessageSquare } from "lucide-react";
+import { Video, Globe, Shield, MessageSquare, Zap } from "lucide-react";
 
 export default function Home() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background overflow-hidden flex flex-col">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+      <section className="relative flex-1 flex flex-col items-center justify-center px-4 overflow-hidden">
         {/* Background blobs for subtle depth */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
           <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]" />
         </div>
 
-        <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="max-w-4xl mx-auto text-center space-y-8 flex flex-col items-center justify-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            className="flex flex-col items-center"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6">
               <Zap className="w-4 h-4 fill-current" />
@@ -82,41 +82,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="bg-card border-border hover:border-primary/50 transition-colors rounded-3xl overflow-hidden group">
-            <CardContent className="p-8 space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <Zap className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold">Lightning Fast</h3>
-              <p className="text-muted-foreground">Match with a stranger in under 2 seconds. Our optimized signaling server ensures zero-wait connections.</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-card border-border hover:border-accent/50 transition-colors rounded-3xl overflow-hidden group">
-            <CardContent className="p-8 space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
-                <Shield className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold">Privacy First</h3>
-              <p className="text-muted-foreground">No accounts, no tracking. Your video stream is peer-to-peer and never touches our servers.</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-card border-border hover:border-primary/50 transition-colors rounded-3xl overflow-hidden group">
-            <CardContent className="p-8 space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold">Moderated Chat</h3>
-              <p className="text-muted-foreground">Keep it clean with our community-driven reporting system and automated safety checks.</p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border">
+      <footer className="py-8 px-4 border-t border-border shrink-0">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground font-medium">
           <div className="flex items-center gap-2">
             <Video className="w-5 h-5 text-primary" />
