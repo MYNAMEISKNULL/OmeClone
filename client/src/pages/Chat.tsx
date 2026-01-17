@@ -10,6 +10,8 @@ import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { motion } from "framer-motion";
+
 export default function Chat() {
   const [, setLocation] = useLocation();
   const { 
@@ -191,6 +193,24 @@ export default function Chat() {
                 You
               </div>
             </div>
+          </div>
+
+          {/* Age Warning */}
+          <div className="relative h-6 bg-destructive/10 overflow-hidden flex items-center justify-center shrink-0">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-destructive/20 to-transparent -skew-x-12"
+              animate={{
+                left: ["-100%", "200%"],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+            <span className="relative z-10 text-[10px] font-bold text-destructive uppercase tracking-[0.2em]">
+              Warning: You must be 18+ to use this service. Please report inappropriate behavior.
+            </span>
           </div>
 
           {/* Bottom Bar */}
