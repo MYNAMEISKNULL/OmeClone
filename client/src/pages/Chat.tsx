@@ -59,11 +59,17 @@ export default function Chat() {
                 isVideoEnabled={partnerMediaStatus.video}
                 className="w-full h-full object-cover"
                 placeholder={
-                  <div className="flex flex-col items-center gap-4 text-muted-foreground/30">
-                    <div className="w-16 h-16 border-2 border-border rounded-xl flex items-center justify-center">
-                      <VideoIcon className="w-8 h-8" />
+                  chatState === 'idle' ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-sm font-bold text-primary animate-bounce">PRESS START TO FIND STRANGER</span>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-4 text-muted-foreground/30">
+                      <div className="w-16 h-16 border-2 border-border rounded-xl flex items-center justify-center">
+                        <VideoIcon className="w-8 h-8" />
+                      </div>
+                    </div>
+                  )
                 }
               />
               <div className="absolute top-4 right-4 flex gap-2">
@@ -117,24 +123,33 @@ export default function Chat() {
 
           {/* Bottom Bar */}
           <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4 shrink-0">
-            <Button 
-              data-testid="button-stop"
-              variant="destructive"
-              onClick={() => {
-                stopChat();
-                setLocation('/');
-              }}
-              className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
-            >
-              STOP
-            </Button>
-            <Button 
-              data-testid="button-next"
-              onClick={nextPartner}
-              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
-            >
-              {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
-            </Button>
+            {chatState === 'idle' ? (
+              <Button 
+                data-testid="button-start"
+                onClick={startChat}
+                className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
+              >
+                START
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  data-testid="button-stop"
+                  variant="destructive"
+                  onClick={stopChat}
+                  className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
+                >
+                  STOP
+                </Button>
+                <Button 
+                  data-testid="button-next"
+                  onClick={nextPartner}
+                  className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
+                >
+                  {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
+                </Button>
+              </>
+            )}
           </div>
         </div>
 

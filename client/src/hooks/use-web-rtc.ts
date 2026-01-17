@@ -245,9 +245,7 @@ export function useWebRTC(): UseWebRTC {
       pcRef.current.close();
       pcRef.current = null;
     }
-    // Ideally notify server to remove from pool, but 'next' or disconnect handles it usually.
-    // We'll just refresh or go to home in a real app, here just reset state.
-    window.location.href = '/'; 
+    sendWS({ type: 'leave' });
   }, []);
 
   const sendMessage = useCallback((text: string) => {
