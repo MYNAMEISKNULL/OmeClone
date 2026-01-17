@@ -5,8 +5,9 @@ import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { Controls } from "@/components/Controls";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Loader2 } from "lucide-react";
+import { Loader2, Video } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
