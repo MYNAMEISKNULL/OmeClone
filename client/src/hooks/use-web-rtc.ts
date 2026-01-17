@@ -101,6 +101,18 @@ export function useWebRTC(): UseWebRTC {
       }
     };
 
+    pc.oniceconnectionstatechange = () => {
+      console.log('ICE Connection State:', pc.iceConnectionState);
+      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected') {
+        toast({
+          title: "Connection Lost",
+          description: "Trying to reconnect...",
+          variant: "destructive"
+        });
+        nextPartner();
+      }
+    };
+
     pc.ontrack = (event) => {
       setRemoteStream(event.streams[0]);
     };
@@ -203,6 +215,9 @@ export function useWebRTC(): UseWebRTC {
     setChatState('waiting');
     setMessages([]);
     if (pcRef.current) {
+      pcRef.current.getSenders().forEach(sender => {
+        if (pcRef.current) pcRef.current.removeTrack(sender);
+      });
       pcRef.current.close();
       pcRef.current = null;
     }
