@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import os from "os";
 
 interface Client {
   id: string;
@@ -28,6 +29,35 @@ export async function registerRoutes(
     const adminData = await storage.getAdmin();
     if (adminData && adminData.password === password) {
       await storage.updateMaintenance(mode, message);
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false });
+    }
+  });
+
+  app.get("/api/admin/maintenance/history", async (_req, res) => {
+    const data = await storage.getMaintenanceHistory();
+    res.json(data);
+  });
+
+  app.get("/api/admin/stats", async (_req, res) => {
+    const freeMem = os.freemem();
+    const totalMem = os.totalmem();
+    const usage = 1 - (freeMem / totalMem);
+    
+    res.json({
+      cpuUsage: os.loadavg()[0],
+      memoryUsage: usage * 100,
+      uptime: os.uptime(),
+      activeConnections: clients.size
+    });
+  });
+
+  app.post("/api/admin/blacklist", async (req, res) => {
+    const { list, password } = req.body;
+    const adminData = await storage.getAdmin();
+    if (adminData && adminData.password === password) {
+      await storage.updateWordBlacklist(list);
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false });
@@ -86,7 +116,7 @@ export async function registerRoutes(
 
     console.log(`Client connected: ${id}`);
 
-    ws.on('message', (rawMessage) => {
+    ws.on('message', async (rawMessage) => {
       try {
         const message = JSON.parse(rawMessage.toString());
         
@@ -131,9 +161,18 @@ export async function registerRoutes(
              if (client.partnerId) {
               const partner = clients.get(client.partnerId);
               if (partner && partner.ws.readyState === WebSocket.OPEN) {
+                const adminData = await storage.getAdmin();
+                const blacklist = (adminData?.wordBlacklist || "").split(',').map(w => w.trim()).filter(w => w);
+                
+                let content = message.content;
+                for (const word of blacklist) {
+                  const regex = new RegExp(word, 'gi');
+                  content = content.replace(regex, '***');
+                }
+
                 partner.ws.send(JSON.stringify({
                   type: 'message',
-                  content: message.content
+                  content: content
                 }));
               }
             }

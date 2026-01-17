@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { Report, Feedback, Admin } from "@shared/schema";
 import { format } from "date-fns";
-import { Shield, MessageSquare, Clock, Lock, Power } from "lucide-react";
+import { Shield, MessageSquare, Clock, Lock, Power, Activity, ListFilter, History } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,17 +18,30 @@ export default function AdminDashboard() {
   const [password, setPassword] = useState("");
   const { toast } = useToast();
 
-  const { data: maintenanceData } = useQuery<{ maintenanceMode: string; maintenanceMessage: string }>({
+  const { data: maintenanceData } = useQuery<{ maintenanceMode: string; maintenanceMessage: string; wordBlacklist: string }>({
     queryKey: ["/api/maintenance"],
+  });
+
+  const { data: stats } = useQuery<{ cpuUsage: number; memoryUsage: number; uptime: number; activeConnections: number }>({
+    queryKey: ["/api/admin/stats"],
+    enabled: isAuthenticated,
+    refetchInterval: 5000,
+  });
+
+  const { data: mHistory } = useQuery<any[]>({
+    queryKey: ["/api/admin/maintenance/history"],
+    enabled: isAuthenticated,
   });
 
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [maintenanceMessage, setMaintenanceMessage] = useState("");
+  const [wordBlacklist, setWordBlacklist] = useState("");
 
   useEffect(() => {
     if (maintenanceData) {
       setMaintenanceMode(maintenanceData.maintenanceMode === "on");
       setMaintenanceMessage(maintenanceData.maintenanceMessage);
+      setWordBlacklist(maintenanceData.wordBlacklist || "");
     }
   }, [maintenanceData]);
 
@@ -42,10 +55,27 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/maintenance"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/maintenance/history"] });
       toast({ title: "Success", description: "Maintenance settings updated" });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to update maintenance settings", variant: "destructive" });
+    },
+  });
+
+  const updateBlacklistMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/admin/blacklist", {
+        list: wordBlacklist,
+        password,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/maintenance"] });
+      toast({ title: "Success", description: "Word blacklist updated" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update word blacklist", variant: "destructive" });
     },
   });
 
@@ -117,18 +147,30 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="reports" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 mb-8">
             <TabsTrigger value="reports" className="gap-2">
               <Shield className="w-4 h-4" />
-              Reports ({reports?.length || 0})
+              Reports
             </TabsTrigger>
             <TabsTrigger value="feedback" className="gap-2">
               <MessageSquare className="w-4 h-4" />
-              Feedback ({feedback?.length || 0})
+              Feedback
+            </TabsTrigger>
+            <TabsTrigger value="health" className="gap-2">
+              <Activity className="w-4 h-4" />
+              Health
+            </TabsTrigger>
+            <TabsTrigger value="blacklist" className="gap-2">
+              <ListFilter className="w-4 h-4" />
+              Filters
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2">
+              <History className="w-4 h-4" />
+              History
             </TabsTrigger>
             <TabsTrigger value="maintenance" className="gap-2">
               <Power className="w-4 h-4" />
-              Maintenance
+              System
             </TabsTrigger>
           </TabsList>
 
@@ -230,6 +272,11 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
         </Tabs>
       </div>
     </div>

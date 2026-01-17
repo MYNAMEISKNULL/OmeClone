@@ -32,12 +32,21 @@ export const admin = pgTable("admin", {
   password: text("password").notNull(),
   maintenanceMode: text("maintenance_mode").default("off"),
   maintenanceMessage: text("maintenance_message").default("Site is under maintenance. Please check back later."),
+  wordBlacklist: text("word_blacklist").default(""),
+});
+
+export const maintenanceHistory = pgTable("maintenance_history", {
+  id: serial("id").primaryKey(),
+  mode: text("mode").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertAdminSchema = createInsertSchema(admin).pick({
   password: true,
   maintenanceMode: true,
   maintenanceMessage: true,
+  wordBlacklist: true,
 });
 
 export type Admin = typeof admin.$inferSelect;

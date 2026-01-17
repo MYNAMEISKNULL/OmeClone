@@ -1,4 +1,4 @@
-import { reports, feedback, admin, type InsertReport, type InsertFeedback, type InsertAdmin, type Report, type Feedback, type Admin } from "@shared/schema";
+import { reports, feedback, admin, maintenanceHistory, type InsertReport, type InsertFeedback, type InsertAdmin, type Report, type Feedback, type Admin } from "@shared/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
 
@@ -10,6 +10,8 @@ export interface IStorage {
   getAdmin(): Promise<Admin | undefined>;
   setAdmin(admin: InsertAdmin): Promise<void>;
   updateMaintenance(mode: string, message: string): Promise<void>;
+  getMaintenanceHistory(): Promise<any[]>;
+  updateWordBlacklist(list: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -49,6 +51,18 @@ export class DatabaseStorage implements IStorage {
       await db.update(admin).set({ maintenanceMode: mode, maintenanceMessage: message }).where(eq(admin.id, existing.id));
     } else {
       await db.insert(admin).values({ password: "default_password", maintenanceMode: mode, maintenanceMessage: message });
+    }
+    await db.insert(maintenanceHistory).values({ mode, message });
+  }
+
+  async getMaintenanceHistory(): Promise<any[]> {
+    return await db.select().from(maintenanceHistory).orderBy(desc(maintenanceHistory.createdAt));
+  }
+
+  async updateWordBlacklist(list: string): Promise<void> {
+    const existing = await this.getAdmin();
+    if (existing) {
+      await db.update(admin).set({ wordBlacklist: list }).where(eq(admin.id, existing.id));
     }
   }
 }
