@@ -10,6 +10,7 @@ import Info from "@/pages/Info";
 import Safety from "@/pages/support/Safety";
 import Feedback from "@/pages/support/Feedback";
 import Contact from "@/pages/support/Contact";
+import AdminDashboard from "@/pages/AdminDashboard";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/safety" component={Safety} />
       <Route path="/feedback" component={Feedback} />
       <Route path="/contact" component={Contact} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -4,16 +4,32 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function FeedbackPage() {
   const { toast } = useToast();
+  const [rating, setRating] = useState<number | null>(null);
+  const [content, setContent] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Success",
-      description: "Your message has been sent. Thank you for your feedback!",
-    });
+    if (!rating) {
+      toast({ title: "Error", description: "Please select a rating.", variant: "destructive" });
+      return;
+    }
+    
+    try {
+      await apiRequest("POST", "/api/feedback", { rating: rating.toString(), content });
+      toast({
+        title: "Success",
+        description: "Your message has been sent. Thank you for your feedback!",
+      });
+      setContent("");
+      setRating(null);
+    } catch (err) {
+      toast({ title: "Error", description: "Could not send feedback.", variant: "destructive" });
+    }
   };
 
   return (
@@ -48,7 +64,13 @@ export default function FeedbackPage() {
                   <label className="text-sm font-medium">How would you rate your experience?</label>
                   <div className="flex gap-2 justify-center py-2">
                     {[1, 2, 3, 4, 5].map((num) => (
-                      <Button key={num} type="button" variant="outline" className="w-10 h-10 p-0 rounded-full hover:border-primary hover:text-primary">
+                      <Button 
+                        key={num} 
+                        type="button" 
+                        variant={rating === num ? "default" : "outline"}
+                        className="w-10 h-10 p-0 rounded-full hover:border-primary hover:text-primary"
+                        onClick={() => setRating(num)}
+                      >
                         {num}
                       </Button>
                     ))}
@@ -59,6 +81,8 @@ export default function FeedbackPage() {
                   <textarea 
                     className="w-full min-h-[150px] p-3 rounded-lg bg-muted/30 border border-border focus:ring-1 focus:ring-primary outline-none transition-all"
                     placeholder="Tell us what you think..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                     required
                   />
                 </div>

@@ -26,6 +26,25 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/reports", async (_req, res) => {
+    const data = await storage.getReports();
+    res.json(data);
+  });
+
+  app.get("/api/admin/feedback", async (_req, res) => {
+    const data = await storage.getFeedback();
+    res.json(data);
+  });
+
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      await storage.createFeedback(req.body);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(400).json({ success: false });
+    }
+  });
+
   // WebSocket Server
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
   const clients = new Map<string, Client>();
