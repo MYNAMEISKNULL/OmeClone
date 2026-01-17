@@ -179,9 +179,10 @@ export default function Home() {
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Company</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li><Link href="/info?tab=safety" className="hover:text-primary transition-colors">About Us</Link></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
-                    <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+                    <li><Link href="/info?tab=feedback" className="hover:text-primary transition-colors">Feedback</Link></li>
+                    <li><Link href="/info?tab=contact" className="hover:text-primary transition-colors">Contact</Link></li>
                   </ul>
+                </div>
                 </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Follow Us</h4>
