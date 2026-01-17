@@ -2,11 +2,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Video, Globe, Shield, MessageSquare, Zap, Twitter, Github, Mail } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [isFooterHovered, setIsFooterHovered] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsFooterHovered(true);
+    }, 300); // 300ms delay to prevent accidental triggers
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setIsFooterHovered(false);
+  };
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col">
@@ -86,8 +99,8 @@ export default function Home() {
 
       {/* Thin Sleek Footer with Hover Expansion */}
       <motion.footer 
-        onMouseEnter={() => setIsFooterHovered(true)}
-        onMouseLeave={() => setIsFooterHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         animate={{ height: isFooterHovered ? "auto" : "64px" }}
         className="border-t border-border bg-card/50 backdrop-blur-md shrink-0 transition-colors hover:bg-card/80"
       >
