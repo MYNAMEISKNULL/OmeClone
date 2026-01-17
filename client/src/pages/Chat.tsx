@@ -4,7 +4,7 @@ import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Video as VideoIcon, Users } from "lucide-react";
+import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Chat() {
@@ -18,6 +18,11 @@ export default function Chat() {
     nextPartner, 
     stopChat, 
     sendMessage,
+    toggleAudio,
+    toggleVideo,
+    isAudioEnabled,
+    isVideoEnabled,
+    partnerMediaStatus,
     error 
   } = useWebRTC();
 
@@ -49,6 +54,7 @@ export default function Chat() {
             <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center h-[40vh] md:h-full">
               <VideoDisplay 
                 stream={remoteStream} 
+                isVideoEnabled={partnerMediaStatus.video}
                 className="w-full h-full object-cover"
                 placeholder={
                   <div className="flex flex-col items-center gap-4 text-muted-foreground/30">
@@ -58,6 +64,18 @@ export default function Chat() {
                   </div>
                 }
               />
+              <div className="absolute top-4 right-4 flex gap-2">
+                {!partnerMediaStatus.audio && (
+                  <div className="p-2 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
+                    <MicOff className="w-4 h-4" />
+                  </div>
+                )}
+                {!partnerMediaStatus.video && (
+                  <div className="p-2 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
+                    <CameraOff className="w-4 h-4" />
+                  </div>
+                )}
+              </div>
               <div className="absolute bottom-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
                 Stranger
               </div>
@@ -68,8 +86,27 @@ export default function Chat() {
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
+                isVideoEnabled={isVideoEnabled}
                 className="w-full h-full object-cover" 
               />
+              <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  size="icon"
+                  variant={isAudioEnabled ? "secondary" : "destructive"}
+                  onClick={toggleAudio}
+                  className="rounded-full w-10 h-10"
+                >
+                  {isAudioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
+                </Button>
+                <Button
+                  size="icon"
+                  variant={isVideoEnabled ? "secondary" : "destructive"}
+                  onClick={toggleVideo}
+                  className="rounded-full w-10 h-10"
+                >
+                  {isVideoEnabled ? <Camera className="w-5 h-5" /> : <CameraOff className="w-5 h-5" />}
+                </Button>
+              </div>
               <div className="absolute bottom-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
                 You
               </div>

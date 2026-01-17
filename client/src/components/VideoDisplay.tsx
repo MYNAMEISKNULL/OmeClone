@@ -8,6 +8,7 @@ interface VideoDisplayProps {
   className?: string;
   muted?: boolean;
   placeholder?: React.ReactNode;
+  isVideoEnabled?: boolean;
 }
 
 export function VideoDisplay({ 
@@ -15,7 +16,8 @@ export function VideoDisplay({
   isLocal = false, 
   className,
   muted = false,
-  placeholder = "Waiting for partner..."
+  placeholder = "Waiting for partner...",
+  isVideoEnabled = true
 }: VideoDisplayProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -30,7 +32,7 @@ export function VideoDisplay({
       "relative overflow-hidden bg-muted/30 rounded-2xl border border-border shadow-sm group",
       className
     )}>
-      {stream ? (
+      {stream && isVideoEnabled ? (
         <video
           ref={videoRef}
           autoPlay
@@ -40,10 +42,10 @@ export function VideoDisplay({
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-muted/20">
-          <div className="p-4 rounded-full bg-background/50 mb-3 animate-pulse">
+          <div className="p-4 rounded-full bg-background/50 mb-3">
             {isLocal ? <VideoOff className="w-8 h-8" /> : <User className="w-12 h-12" />}
           </div>
-          <div className="text-sm font-medium animate-pulse">{placeholder}</div>
+          <div className="text-sm font-medium">{isVideoEnabled ? placeholder : (isLocal ? "Camera Off" : "Partner's Camera Off")}</div>
         </div>
       )}
       

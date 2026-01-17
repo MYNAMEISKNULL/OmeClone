@@ -18,6 +18,11 @@ interface UseWebRTC {
   nextPartner: () => void;
   stopChat: () => void;
   sendMessage: (text: string) => void;
+  toggleAudio: () => void;
+  toggleVideo: () => void;
+  isAudioEnabled: boolean;
+  isVideoEnabled: boolean;
+  partnerMediaStatus: { audio: boolean; video: boolean };
   error: string | null;
 }
 
@@ -27,6 +32,9 @@ export function useWebRTC(): UseWebRTC {
   const [chatState, setChatState] = useState<ChatState>('idle');
   const [messages, setMessages] = useState<{ id: string; text: string; isLocal: boolean; timestamp: Date }[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [partnerMediaStatus, setPartnerMediaStatus] = useState({ audio: true, video: true });
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -177,6 +185,11 @@ export function useWebRTC(): UseWebRTC {
         if (!pcRef.current) return;
         const data = msg.data;
 
+        if (data.type === 'media_status') {
+          setPartnerMediaStatus(data.status);
+          return;
+        }
+
         if (data.type === 'offer') {
           await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
           const answer = await pcRef.current.createAnswer();
@@ -248,6 +261,34 @@ export function useWebRTC(): UseWebRTC {
     }]);
   }, [chatState]);
 
+  const toggleAudio = useCallback(() => {
+    if (localStream) {
+      const audioTrack = localStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsAudioEnabled(audioTrack.enabled);
+        sendSignal({ 
+          type: 'media_status', 
+          status: { audio: audioTrack.enabled, video: isVideoEnabled } 
+        });
+      }
+    }
+  }, [localStream, isVideoEnabled]);
+
+  const toggleVideo = useCallback(() => {
+    if (localStream) {
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsVideoEnabled(videoTrack.enabled);
+        sendSignal({ 
+          type: 'media_status', 
+          status: { audio: isAudioEnabled, video: videoTrack.enabled } 
+        });
+      }
+    }
+  }, [localStream, isAudioEnabled]);
+
   return {
     localStream,
     remoteStream,
@@ -257,6 +298,11 @@ export function useWebRTC(): UseWebRTC {
     nextPartner,
     stopChat,
     sendMessage,
+    toggleAudio,
+    toggleVideo,
+    isAudioEnabled,
+    isVideoEnabled,
+    partnerMediaStatus,
     error
   };
 }
