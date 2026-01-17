@@ -138,9 +138,9 @@ export default function Chat() {
                   ) : (
                     <div className="loader-wrapper">
                       <div className="typing-dots">
-                        <div className="dot animate-bounce-custom [animation-delay:-0.32s] bg-[#00f2ff] w-3 h-3 rounded-full" />
-                        <div className="dot animate-bounce-custom [animation-delay:-0.16s] bg-[#bc13fe] w-3 h-3 rounded-full" />
-                        <div className="dot animate-bounce-custom bg-[#ff0055] w-3 h-3 rounded-full" />
+                        <div className="dot animate-dot-1 bg-[#00f2ff] w-3 h-3 rounded-full" />
+                        <div className="dot animate-dot-2 bg-[#bc13fe] w-3 h-3 rounded-full" />
+                        <div className="dot animate-dot-3 bg-[#ff0055] w-3 h-3 rounded-full" />
                       </div>
                       <div className="status-text mt-4 text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</div>
                     </div>

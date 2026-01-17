@@ -74,6 +74,21 @@
   }
 }
 
+.animate-dot-1 {
+  animation: bounce 1.4s infinite ease-in-out both;
+  animation-delay: -0.32s;
+}
+
+.animate-dot-2 {
+  animation: bounce 1.4s infinite ease-in-out both;
+  animation-delay: -0.16s;
+}
+
+.animate-dot-3 {
+  animation: bounce 1.4s infinite ease-in-out both;
+  animation-delay: 0s;
+}
+
 .animate-bounce-custom {
   animation: bounce 1.4s infinite ease-in-out both;
 }
