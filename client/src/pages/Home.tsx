@@ -61,10 +61,22 @@ export default function Home() {
               size="lg"
               data-testid="button-start-chat"
               onClick={() => setLocation('/chat')}
-              className="w-full sm:w-auto h-16 px-10 rounded-2xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group"
+              className="relative w-full sm:w-auto h-16 px-10 rounded-2xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group overflow-hidden"
             >
-              <Video className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-              START VIDEO CHAT
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+                animate={{
+                  left: ["-100%", "200%"],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  repeatDelay: 1
+                }}
+              />
+              <Video className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform relative z-10" />
+              <span className="relative z-10">START VIDEO CHAT</span>
             </Button>
             <Button 
               variant="outline"
