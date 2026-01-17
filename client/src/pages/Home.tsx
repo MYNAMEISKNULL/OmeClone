@@ -39,10 +39,6 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6">
-              <Zap className="w-4 h-4 fill-current" />
-              <span>Instant matching, no login required</span>
-            </div>
             <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground">
               Talk to strangers, <br />
               <span className="text-primary">instantly.</span>
