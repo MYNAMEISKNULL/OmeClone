@@ -51,6 +51,29 @@ export default function Home() {
             </p>
           </motion.div>
 
+          {/* Age Warning */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="relative h-10 bg-destructive/10 overflow-hidden rounded-2xl border border-destructive/20 flex items-center justify-center w-full max-w-md mx-auto"
+          >
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-destructive/20 to-transparent -skew-x-12"
+              animate={{
+                left: ["-100%", "200%"],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+            <span className="relative z-10 text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-widest px-6 text-center">
+              You must be 18+ to use this service.
+            </span>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
