@@ -1,19 +1,53 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Report, Feedback } from "@shared/schema";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import type { Report, Feedback, Admin } from "@shared/schema";
 import { format } from "date-fns";
-import { Shield, MessageSquare, Clock, Lock } from "lucide-react";
-import { useState } from "react";
+import { Shield, MessageSquare, Clock, Lock, Power } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
+
+  const { data: maintenanceData } = useQuery<{ maintenanceMode: string; maintenanceMessage: string }>({
+    queryKey: ["/api/maintenance"],
+  });
+
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState("");
+
+  useEffect(() => {
+    if (maintenanceData) {
+      setMaintenanceMode(maintenanceData.maintenanceMode === "on");
+      setMaintenanceMessage(maintenanceData.maintenanceMessage);
+    }
+  }, [maintenanceData]);
+
+  const updateMaintenanceMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/admin/maintenance", {
+        mode: maintenanceMode ? "on" : "off",
+        message: maintenanceMessage,
+        password,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/maintenance"] });
+      toast({ title: "Success", description: "Maintenance settings updated" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update maintenance settings", variant: "destructive" });
+    },
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,13 +109,15 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight">Admin Controller</h1>
-          <p className="text-muted-foreground mt-2">Oversee reports and user feedback.</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight">Admin Controller</h1>
+            <p className="text-muted-foreground mt-2">Oversee reports and user feedback.</p>
+          </div>
         </div>
 
         <Tabs defaultValue="reports" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
             <TabsTrigger value="reports" className="gap-2">
               <Shield className="w-4 h-4" />
               Reports ({reports?.length || 0})
@@ -89,6 +125,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="feedback" className="gap-2">
               <MessageSquare className="w-4 h-4" />
               Feedback ({feedback?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="maintenance" className="gap-2">
+              <Power className="w-4 h-4" />
+              Maintenance
             </TabsTrigger>
           </TabsList>
 
@@ -146,6 +186,49 @@ export default function AdminDashboard() {
                 ))
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="maintenance" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Maintenance Mode</CardTitle>
+                <CardDescription>
+                  Shut down the website and show a message to all users.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between space-x-2">
+                  <Label htmlFor="maintenance-mode" className="flex flex-col space-y-1">
+                    <span>Activate Maintenance Mode</span>
+                    <span className="font-normal text-sm text-muted-foreground">
+                      When active, users will see the maintenance message.
+                    </span>
+                  </Label>
+                  <Switch
+                    id="maintenance-mode"
+                    checked={maintenanceMode}
+                    onCheckedChange={setMaintenanceMode}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maintenance-message">Maintenance Message</Label>
+                  <Textarea
+                    id="maintenance-message"
+                    placeholder="Enter the message to show to users..."
+                    value={maintenanceMessage}
+                    onChange={(e) => setMaintenanceMessage(e.target.value)}
+                    rows={4}
+                  />
+                </div>
+                <Button 
+                  onClick={() => updateMaintenanceMutation.mutate()}
+                  disabled={updateMaintenanceMutation.isPending}
+                  className="w-full h-12 font-bold"
+                >
+                  {updateMaintenanceMutation.isPending ? "UPDATING..." : "UPDATE SETTINGS"}
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

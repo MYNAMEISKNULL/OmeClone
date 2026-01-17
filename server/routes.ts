@@ -15,6 +15,25 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  app.get("/api/maintenance", async (_req, res) => {
+    const adminData = await storage.getAdmin();
+    res.json({
+      maintenanceMode: adminData?.maintenanceMode || "off",
+      maintenanceMessage: adminData?.maintenanceMessage || ""
+    });
+  });
+
+  app.post("/api/admin/maintenance", async (req, res) => {
+    const { mode, message, password } = req.body;
+    const adminData = await storage.getAdmin();
+    if (adminData && adminData.password === password) {
+      await storage.updateMaintenance(mode, message);
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false });
+    }
+  });
+
   // REST API
   app.post(api.reports.create.path, async (req, res) => {
     try {

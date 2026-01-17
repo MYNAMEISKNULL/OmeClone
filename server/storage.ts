@@ -9,6 +9,7 @@ export interface IStorage {
   getFeedback(): Promise<Feedback[]>;
   getAdmin(): Promise<Admin | undefined>;
   setAdmin(admin: InsertAdmin): Promise<void>;
+  updateMaintenance(mode: string, message: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -39,6 +40,13 @@ export class DatabaseStorage implements IStorage {
       await db.update(admin).set(insertAdmin).where(eq(admin.id, existing.id));
     } else {
       await db.insert(admin).values(insertAdmin);
+    }
+  }
+
+  async updateMaintenance(mode: string, message: string): Promise<void> {
+    const existing = await this.getAdmin();
+    if (existing) {
+      await db.update(admin).set({ maintenanceMode: mode, maintenanceMessage: message }).where(eq(admin.id, existing.id));
     }
   }
 }

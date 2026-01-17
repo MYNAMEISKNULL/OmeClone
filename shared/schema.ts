@@ -30,10 +30,14 @@ export const insertFeedbackSchema = createInsertSchema(feedback).pick({
 export const admin = pgTable("admin", {
   id: serial("id").primaryKey(),
   password: text("password").notNull(),
+  maintenanceMode: text("maintenance_mode").default("off"),
+  maintenanceMessage: text("maintenance_message").default("Site is under maintenance. Please check back later."),
 });
 
 export const insertAdminSchema = createInsertSchema(admin).pick({
   password: true,
+  maintenanceMode: true,
+  maintenanceMessage: true,
 });
 
 export type Admin = typeof admin.$inferSelect;
