@@ -22,10 +22,10 @@ export function VideoDisplay({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current && stream) {
+    if (videoRef.current && stream && isVideoEnabled) {
       videoRef.current.srcObject = stream;
     }
-  }, [stream]);
+  }, [stream, isVideoEnabled]);
 
   return (
     <div className={cn(
