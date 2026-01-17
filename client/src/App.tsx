@@ -17,10 +17,13 @@ function Router() {
   );
 }
 
+import { Header } from "@/components/Header";
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={0}>
+        <Header />
         <Toaster />
         <Router />
       </TooltipProvider>

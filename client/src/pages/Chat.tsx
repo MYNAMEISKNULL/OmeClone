@@ -40,25 +40,8 @@ export default function Chat() {
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col">
-      {/* Top Bar */}
-      <div className="h-16 px-6 flex items-center justify-between border-b border-white/5 bg-black/20 backdrop-blur-sm z-50">
-        <div 
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => setLocation('/')}
-        >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accent flex items-center justify-center">
-            <span className="font-bold text-white text-xs">NX</span>
-          </div>
-          <span className="font-display font-bold text-lg text-white">Nexus</span>
-        </div>
-        
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <span className={`w-2 h-2 rounded-full ${chatState === 'connected' ? 'bg-green-500' : 'bg-yellow-500 animate-pulse'}`} />
-          <span className="text-muted-foreground">
-            {chatState === 'connected' ? 'Connected' : chatState === 'waiting' ? 'Searching...' : 'Idle'}
-          </span>
-        </div>
-      </div>
+      {/* Top Bar removed and replaced by global Header component */}
+      <div className="h-16" /> {/* Spacer for the floating header */}
 
       <div className="flex-1 p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-0 max-w-[1800px] mx-auto w-full">
         {/* Main Video Area */}
