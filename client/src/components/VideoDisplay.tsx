@@ -27,7 +27,7 @@ export function VideoDisplay({
 
   return (
     <div className={cn(
-      "relative overflow-hidden bg-black/40 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-sm group",
+      "relative overflow-hidden bg-muted/30 rounded-2xl border border-border shadow-sm group",
       className
     )}>
       {stream ? (
@@ -39,7 +39,7 @@ export function VideoDisplay({
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-secondary/50">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-muted/20">
           <div className="p-4 rounded-full bg-background/50 mb-3 animate-pulse">
             {isLocal ? <VideoOff className="w-8 h-8" /> : <User className="w-12 h-12" />}
           </div>
@@ -48,7 +48,7 @@ export function VideoDisplay({
       )}
       
       {/* Label */}
-      <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-medium text-white/90 border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-background/80 backdrop-blur-md text-xs font-medium text-foreground border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         {isLocal ? "You" : "Partner"}
       </div>
     </div>
