@@ -31,35 +31,31 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl mx-auto space-y-8"
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-4xl mx-auto space-y-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">New</span>
-            <span className="w-px h-3 bg-white/20" />
-            <span className="text-sm text-muted-foreground">Video chat re-imagined for the modern web</span>
+          <div className="space-y-6">
+            <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight text-white leading-[1.05]">
+              Connect <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-accent">
+                Instantly.
+              </span>
+            </h1>
+
+            <p className="max-w-xl mx-auto text-lg md:text-xl text-muted-foreground/60 leading-relaxed font-light">
+              High-quality video connections with people around the world.
+              Simple, smooth, and entirely anonymous.
+            </p>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-white leading-[1.1]">
-            Connect with strangers <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-accent">
-              across the globe.
-            </span>
-          </h1>
-
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground/80 leading-relaxed">
-            Experience instant, high-quality video connections. No login required. 
-            Just click start and meet someone new in seconds.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/chat">
               <Button 
                 size="lg" 
-                className="h-14 px-8 rounded-2xl text-lg font-semibold bg-white text-black hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-xl shadow-white/10"
+                className="h-16 px-10 rounded-full text-xl font-medium bg-white text-black hover:bg-white/90 hover:scale-105 transition-all duration-500 shadow-2xl shadow-white/5 active:scale-95"
               >
                 Start Video Chat
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-3 w-6 h-6" />
               </Button>
             </Link>
           </div>

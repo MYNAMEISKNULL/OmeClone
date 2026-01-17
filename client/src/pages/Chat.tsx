@@ -60,10 +60,10 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6 min-h-0">
+      <div className="flex-1 p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-0 max-w-[1800px] mx-auto w-full">
         {/* Main Video Area */}
-        <div className="lg:col-span-3 flex flex-col gap-4 relative">
-          <div className="flex-1 relative rounded-3xl overflow-hidden bg-black/40 border border-white/5 shadow-2xl">
+        <div className="lg:col-span-3 flex flex-col gap-6 relative">
+          <div className="flex-1 relative rounded-[3rem] overflow-hidden bg-black/60 border border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.5)]">
             {/* Remote Video (Main) */}
             <AnimatePresence mode="wait">
               {chatState === 'waiting' ? (
@@ -75,23 +75,23 @@ export default function Chat() {
                   className="absolute inset-0 flex flex-col items-center justify-center"
                 >
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
+                    <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
+                    <Loader2 className="w-10 h-10 text-primary/20 animate-spin relative z-10" />
                   </div>
-                  <h3 className="mt-8 text-2xl font-display font-medium text-white">Looking for a partner...</h3>
-                  <p className="mt-2 text-muted-foreground">Connecting you with someone awesome</p>
+                  <h3 className="mt-8 text-lg font-display font-light text-white/40 tracking-widest uppercase">Connecting</h3>
                 </motion.div>
               ) : (
                 <motion.div
                   key="video"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 1 }}
                   className="w-full h-full"
                 >
                   <VideoDisplay 
                     stream={remoteStream} 
-                    className="w-full h-full rounded-none border-none"
-                    placeholder="Partner connecting..."
+                    className="w-full h-full rounded-none border-none object-cover"
+                    placeholder="Establishing connection..."
                   />
                 </motion.div>
               )}
@@ -99,16 +99,17 @@ export default function Chat() {
 
             {/* Local Video (PIP) */}
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="absolute bottom-6 right-6 w-48 aspect-video rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 z-20 hover:scale-105 transition-transform duration-300"
+              transition={{ duration: 0.8 }}
+              className="absolute bottom-10 right-10 w-44 aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/5 z-20 hover:scale-105 transition-transform duration-700 backdrop-blur-xl bg-black/10"
             >
-              <VideoDisplay stream={localStream} isLocal className="w-full h-full rounded-none border-none bg-black" />
+              <VideoDisplay stream={localStream} isLocal className="w-full h-full rounded-none border-none bg-transparent" />
             </motion.div>
           </div>
 
           {/* Controls Bar - Floating */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-md">
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 w-full max-w-xs">
             <Controls 
               onNext={nextPartner} 
               onStop={() => {

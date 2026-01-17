@@ -39,100 +39,53 @@ export function Controls({ onNext, onStop, onReport, state, localStream }: Contr
   };
 
   return (
-    <div className="flex items-center justify-center gap-4 p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl max-w-fit mx-auto">
-      <div className="flex items-center gap-2 mr-4 border-r border-white/10 pr-6">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleMute}
-              className={cn(
-                "rounded-full w-12 h-12 transition-all duration-200",
-                isMuted 
-                  ? "bg-destructive/20 text-destructive hover:bg-destructive/30" 
-                  : "bg-white/5 hover:bg-white/10 text-white"
-              )}
-            >
-              {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{isMuted ? "Unmute Microphone" : "Mute Microphone"}</p>
-          </TooltipContent>
-        </Tooltip>
+    <div className="flex items-center justify-center gap-3 p-3 bg-black/40 backdrop-blur-2xl rounded-full border border-white/5 shadow-2xl shadow-black/50">
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={toggleMute}
+        className="w-12 h-12 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+      >
+        {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+      </Button>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleVideo}
-              className={cn(
-                "rounded-full w-12 h-12 transition-all duration-200",
-                isVideoOff 
-                  ? "bg-destructive/20 text-destructive hover:bg-destructive/30" 
-                  : "bg-white/5 hover:bg-white/10 text-white"
-              )}
-            >
-              {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{isVideoOff ? "Turn Camera On" : "Turn Camera Off"}</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={toggleVideo}
+        className="w-12 h-12 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+      >
+        {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+      </Button>
 
-      <div className="flex items-center gap-3">
-        <Button
-          onClick={onStop}
-          variant="destructive"
-          className="rounded-xl px-6 h-12 font-semibold shadow-lg shadow-destructive/20 hover:shadow-destructive/30 transition-all hover:-translate-y-0.5"
-        >
-          <Square className="w-4 h-4 mr-2 fill-current" />
-          Stop
-        </Button>
+      <div className="w-px h-6 bg-white/10 mx-1" />
 
-        <Button
-          onClick={onNext}
-          disabled={state === 'waiting'}
-          className={cn(
-            "rounded-xl px-8 h-12 font-semibold transition-all hover:-translate-y-0.5",
-            "bg-gradient-to-r from-primary to-primary/80 hover:to-primary text-white shadow-lg shadow-primary/25 hover:shadow-primary/40",
-            state === 'waiting' && "opacity-80 cursor-wait animate-pulse"
-          )}
-        >
-          {state === 'waiting' ? (
-            "Searching..."
-          ) : (
-            <>
-              Next
-              <SkipForward className="w-4 h-4 ml-2 fill-current" />
-            </>
-          )}
-        </Button>
-      </div>
-      
-      {state === 'connected' && onReport && (
-        <div className="ml-4 pl-6 border-l border-white/10">
-           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onReport}
-                className="rounded-full w-10 h-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-              >
-                <Flag className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Report Partner</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      )}
+      <Button 
+        variant="default" 
+        onClick={onNext}
+        className="h-12 px-8 rounded-full bg-white text-black hover:bg-white/90 font-medium active:scale-95 transition-all"
+      >
+        <SkipForward className="w-5 h-5 mr-2" />
+        Next
+      </Button>
+
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={onStop}
+        className="w-12 h-12 rounded-full hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors"
+      >
+        <Square className="w-5 h-5" />
+      </Button>
+
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={onReport}
+        className="w-12 h-12 rounded-full hover:bg-white/10 text-white/20 hover:text-white/40 transition-colors"
+      >
+        <Flag className="w-4 h-4" />
+      </Button>
     </div>
   );
 }
