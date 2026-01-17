@@ -4,8 +4,9 @@ import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff } from "lucide-react";
+import { Video as VideoIcon, Users, Mic, MicOff, Camera, CameraOff, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
@@ -27,6 +28,7 @@ export default function Chat() {
   } = useWebRTC();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
 
   useEffect(() => {
     startChat();
@@ -136,8 +138,8 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Sidebar Chat */}
-        <div className="w-full md:w-80 h-1/3 md:h-full border-t md:border-t-0 md:border-l border-border flex flex-col bg-card shrink-0">
+        {/* Sidebar Chat (Desktop) */}
+        <div className="hidden md:flex w-80 h-full border-l border-border flex-col bg-card shrink-0">
           <ChatBox 
             messages={messages} 
             onSendMessage={sendMessage} 
@@ -145,6 +147,32 @@ export default function Chat() {
             className="flex-1 border-none bg-transparent min-h-0"
           />
         </div>
+
+        {/* Mobile Chat Drawer */}
+        <Drawer open={isChatDrawerOpen} onOpenChange={setIsChatDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button
+              size="icon"
+              variant="secondary"
+              className="md:hidden fixed bottom-24 right-4 z-50 rounded-full w-12 h-12 shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <MessageCircle className="w-6 h-6" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="h-[80vh] px-0">
+            <DrawerHeader className="border-b shrink-0">
+              <DrawerTitle className="text-center">Chat with Stranger</DrawerTitle>
+            </DrawerHeader>
+            <div className="flex-1 overflow-hidden flex flex-col">
+              <ChatBox 
+                messages={messages} 
+                onSendMessage={sendMessage} 
+                disabled={chatState !== 'connected'} 
+                className="flex-1 border-none bg-transparent"
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       <ReportDialog open={isReportOpen} onOpenChange={setIsReportOpen} />
