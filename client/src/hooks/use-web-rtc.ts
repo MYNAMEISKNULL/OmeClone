@@ -52,7 +52,9 @@ export function useWebRTC(): UseWebRTC {
 
     return () => {
       // Cleanup tracks on unmount
-      localStream?.getTracks().forEach(track => track.stop());
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+      }
     };
   }, []);
 

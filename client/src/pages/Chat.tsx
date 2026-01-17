@@ -33,10 +33,10 @@ export default function Chat() {
   // Handle fatal error
   useEffect(() => {
     if (error) {
-      alert(error); // Or a nicer dialog
-      setLocation('/');
+      // alert(error); // Removed alert to prevent jumping
+      // setLocation('/'); // Removed redirect to allow user to see what happened
     }
-  }, [error, setLocation]);
+  }, [error]);
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col">
