@@ -23,9 +23,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-y-auto">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative flex-1 min-h-[600px] flex flex-col items-center justify-center px-4 py-12">
+      <section className="relative min-h-[600px] flex flex-col items-center justify-center px-4 py-12">
         {/* Background blobs for subtle depth */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
@@ -131,7 +131,7 @@ export default function Home() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         animate={{ height: isFooterHovered ? "auto" : "64px" }}
-        className="border-t border-border bg-card/50 backdrop-blur-md shrink-0 transition-colors hover:bg-card/80"
+        className="border-t border-border bg-card/50 backdrop-blur-md shrink-0 transition-colors hover:bg-card/80 overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-6">
           {/* Main Footer Row (Always Visible) */}
