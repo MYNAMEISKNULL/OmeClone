@@ -22,6 +22,8 @@ export const feedback = pgTable("feedback", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export type Feedback = typeof feedback.$inferSelect;
+
 export const insertFeedbackSchema = createInsertSchema(feedback).pick({
   rating: true,
   content: true,

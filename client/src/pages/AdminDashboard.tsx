@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { reports, feedback, admin, maintenanceHistory } from "@shared/schema";
 import type { Report, Feedback, Admin } from "@shared/schema";
 import { format } from "date-fns";
 import { Shield, MessageSquare, Clock, Lock, Power, Activity, ListFilter, History } from "lucide-react";
