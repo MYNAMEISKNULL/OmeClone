@@ -27,9 +27,10 @@ export function Header() {
   }, [location]);
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-full px-4 flex justify-center pointer-events-none">
+    <div className="fixed top-6 inset-x-0 z-[100] flex justify-center pointer-events-none">
       <motion.div
         initial={false}
+        style={{ originX: 0.5 }}
         animate={{
           width: menuOpen ? (menuExpanded ? 720 : 680) : 580,
           height: menuExpanded ? "auto" : 64,
