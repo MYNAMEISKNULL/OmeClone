@@ -62,50 +62,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="h-14 px-8 rounded-2xl text-lg font-semibold bg-transparent border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300 backdrop-blur-sm"
-              onClick={() => alert("Text chat coming soon!")}
-            >
-              Text Chat Only
-            </Button>
           </div>
-        </motion.div>
-
-        {/* Features Grid */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-5xl w-full"
-        >
-          {[
-            { 
-              icon: Zap, 
-              title: "Instant Match", 
-              desc: "Our lightning-fast matching algorithm connects you in milliseconds." 
-            },
-            { 
-              icon: Shield, 
-              title: "Safe & Secure", 
-              desc: "Advanced moderation and reporting tools keep the community safe." 
-            },
-            { 
-              icon: Users, 
-              title: "Global Community", 
-              desc: "Meet fascinating people from over 150+ countries worldwide." 
-            }
-          ].map((feature, i) => (
-            <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-md hover:bg-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4">
-                <feature.icon className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
-            </div>
-          ))}
         </motion.div>
       </main>
       
