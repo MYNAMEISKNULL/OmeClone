@@ -31,7 +31,7 @@ export function Header() {
       <motion.div
         initial={false}
         animate={{
-          width: menuOpen ? (menuExpanded ? 720 : 540) : 580,
+          width: menuOpen ? (menuExpanded ? 720 : 680) : 580,
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
