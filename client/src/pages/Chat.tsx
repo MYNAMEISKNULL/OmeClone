@@ -39,80 +39,83 @@ export default function Chat() {
   }, [error]);
 
   return (
-    <div className="h-screen bg-background overflow-hidden flex flex-col">
-      {/* Top Bar removed and replaced by global Header component */}
-      <div className="h-16" /> {/* Spacer for the floating header */}
+    <div className="h-screen bg-[#1a1a1a] overflow-hidden flex flex-col font-sans">
+      {/* Top Bar */}
+      <div className="h-12 px-4 flex items-center justify-between bg-[#1a1a1a] border-b border-white/5 z-50">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-white text-lg tracking-tight">OmeClone</span>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm">
+          <span className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="text-white/60">24,000+ Online</span>
+        </div>
+      </div>
 
-      <div className="flex-1 p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-0 max-w-[1800px] mx-auto w-full">
+      <div className="flex-1 flex min-h-0 bg-[#0a0a0a]">
         {/* Main Video Area */}
-        <div className="lg:col-span-3 flex flex-col gap-6 relative">
-          <div className="flex-1 relative rounded-[3rem] overflow-hidden bg-black/60 border border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-            {/* Remote Video (Main) */}
-            <AnimatePresence mode="wait">
-              {chatState === 'waiting' ? (
-                <motion.div 
-                  key="waiting"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center"
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
-                    <Loader2 className="w-10 h-10 text-primary/20 animate-spin relative z-10" />
+        <div className="flex-1 flex flex-col min-w-0 bg-[#000000]">
+          <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0">
+            {/* Remote Video */}
+            <div className="relative rounded-lg overflow-hidden bg-[#2a3441] border border-white/5 flex items-center justify-center">
+              <VideoDisplay 
+                stream={remoteStream} 
+                className="w-full h-full object-cover"
+                placeholder={<div className="flex flex-col items-center gap-4 text-white/20">
+                  <div className="w-16 h-16 border-2 border-white/10 rounded-xl flex items-center justify-center">
+                    <Video className="w-8 h-8" />
                   </div>
-                  <h3 className="mt-8 text-lg font-display font-light text-white/40 tracking-widest uppercase">Connecting</h3>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="video"
-                  initial={{ opacity: 0, filter: 'blur(10px)' }}
-                  animate={{ opacity: 1, filter: 'blur(0px)' }}
-                  transition={{ duration: 1 }}
-                  className="w-full h-full"
-                >
-                  <VideoDisplay 
-                    stream={remoteStream} 
-                    className="w-full h-full rounded-none border-none object-cover"
-                    placeholder="Establishing connection..."
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>}
+              />
+              <div className="absolute bottom-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white/80 border border-white/10">
+                Stranger
+              </div>
+            </div>
 
-            {/* Local Video (PIP) */}
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="absolute bottom-10 right-10 w-44 aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/5 z-20 hover:scale-105 transition-transform duration-700 backdrop-blur-xl bg-black/10"
-            >
-              <VideoDisplay stream={localStream} isLocal className="w-full h-full rounded-none border-none bg-transparent" />
-            </motion.div>
+            {/* Local Video */}
+            <div className="relative rounded-lg overflow-hidden bg-[#2a3441] border border-white/5 flex items-center justify-center">
+              <VideoDisplay 
+                stream={localStream} 
+                isLocal 
+                className="w-full h-full object-cover" 
+              />
+              <div className="absolute bottom-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white/80 border border-white/10">
+                You
+              </div>
+            </div>
           </div>
 
-          {/* Controls Bar - Floating */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 w-full max-w-xs">
-            <Controls 
-              onNext={nextPartner} 
-              onStop={() => {
+          {/* Bottom Bar */}
+          <div className="h-20 px-4 bg-[#1a1a1a] border-t border-white/5 flex items-center gap-4">
+            <Button 
+              onClick={() => {
                 stopChat();
                 setLocation('/');
-              }} 
-              onReport={() => setIsReportOpen(true)}
-              state={chatState}
-              localStream={localStream}
-            />
+              }}
+              className="h-12 px-8 bg-[#ff4b5c] hover:bg-[#ff3246] text-white font-bold rounded-lg uppercase tracking-wider"
+            >
+              STOP
+            </Button>
+            <Button 
+              onClick={nextPartner}
+              className="flex-1 h-12 bg-white hover:bg-white/90 text-black font-bold rounded-lg uppercase tracking-wider text-base"
+            >
+              {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
+            </Button>
           </div>
         </div>
 
         {/* Sidebar Chat */}
-        <div className="hidden lg:block lg:col-span-1 h-full min-h-0">
-          <ChatBox 
-            messages={messages} 
-            onSendMessage={sendMessage} 
-            disabled={chatState !== 'connected'} 
-          />
+        <div className="w-80 border-l border-white/5 flex flex-col bg-[#1a1a1a]">
+          <div className="p-4 flex-1 overflow-y-auto text-sm">
+            <div className="text-white/60 mb-4 text-center">You're connected to a stranger. Say hello!</div>
+            <ChatBox 
+              messages={messages} 
+              onSendMessage={sendMessage} 
+              disabled={chatState !== 'connected'} 
+              className="h-full border-none bg-transparent"
+            />
+          </div>
         </div>
       </div>
 

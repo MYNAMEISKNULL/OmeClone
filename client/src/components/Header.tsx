@@ -26,6 +26,8 @@ export function Header() {
     setMenuOpen(false);
   }, [location]);
 
+  if (location === '/chat') return null;
+
   return (
     <div className="fixed top-6 inset-x-0 z-[100] flex justify-center pointer-events-none">
       <motion.div
