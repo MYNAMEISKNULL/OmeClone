@@ -14,25 +14,44 @@ interface Message {
 interface ChatBoxProps {
   messages: Message[];
   onSendMessage: (text: string) => void;
+  onTyping?: (isTyping: boolean) => void;
+  isPartnerTyping?: boolean;
   disabled?: boolean;
   className?: string;
 }
 
-export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBoxProps) {
+export function ChatBox({ messages, onSendMessage, onTyping, isPartnerTyping, disabled, className }: ChatBoxProps) {
   const [inputValue, setInputValue] = useState("");
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isPartnerTyping]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    
+    if (onTyping) {
+      onTyping(true);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => {
+        onTyping(false);
+      }, 2000);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && !disabled) {
       onSendMessage(inputValue.trim());
       setInputValue("");
+      if (onTyping) {
+        onTyping(false);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      }
     }
   };
 
@@ -68,6 +87,16 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
             </span>
           </div>
         ))}
+        {isPartnerTyping && (
+          <div className="flex items-center gap-2 p-1 animate-in fade-in slide-in-from-bottom-1">
+            <div className="flex gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-1" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-2" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-3" />
+            </div>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stranger is typing</span>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="p-3 md:p-4 border-t border-border bg-card/50 backdrop-blur-sm shrink-0">
@@ -75,7 +104,7 @@ export function ChatBox({ messages, onSendMessage, disabled, className }: ChatBo
           <Input
             data-testid="input-chat"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             placeholder="Type a message..."
             disabled={disabled}
             autoComplete="off"

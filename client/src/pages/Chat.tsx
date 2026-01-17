@@ -23,17 +23,30 @@ export default function Chat() {
     nextPartner, 
     stopChat, 
     sendMessage,
+    sendTyping,
+    isTyping,
     toggleAudio,
     toggleVideo,
     isAudioEnabled,
     isVideoEnabled,
     partnerMediaStatus,
+    partnerInterests,
     onlineCount,
     error 
   } = useWebRTC();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
+  const [userInterests, setUserInterests] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('user_interests');
+    if (saved) {
+      try {
+        setUserInterests(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,9 +64,9 @@ export default function Chat() {
           break;
         case 'enter':
           if (chatState === 'idle') {
-            startChat();
+            startChat(userInterests);
           } else {
-            nextPartner();
+            nextPartner(userInterests);
           }
           break;
         case 'm':
@@ -67,11 +80,15 @@ export default function Chat() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo]);
+  }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo, userInterests]);
 
   useEffect(() => {
-    startChat();
-  }, []);
+    if (userInterests.length > 0) {
+      startChat(userInterests);
+    } else {
+      startChat();
+    }
+  }, [userInterests, startChat]);
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
@@ -159,8 +176,19 @@ export default function Chat() {
                   </div>
                 )}
               </div>
-              <div className="absolute bottom-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
-                Stranger
+              <div className="absolute bottom-4 left-4 flex flex-col gap-2">
+                <div className="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
+                  Stranger
+                </div>
+                {partnerInterests.length > 0 && (
+                  <div className="flex flex-wrap gap-1 max-w-[200px]">
+                    {partnerInterests.map(interest => (
+                      <span key={interest} className="px-2 py-0.5 bg-primary/20 backdrop-blur-md rounded-full text-[10px] font-bold text-primary border border-primary/30 uppercase tracking-tight">
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -221,7 +249,7 @@ export default function Chat() {
             {chatState === 'idle' ? (
               <Button 
                 data-testid="button-start"
-                onClick={startChat}
+                onClick={() => startChat(userInterests)}
                 className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                 title="Shortcut: Enter"
               >
@@ -240,7 +268,7 @@ export default function Chat() {
                 </Button>
                 <Button 
                   data-testid="button-next"
-                  onClick={nextPartner}
+                  onClick={() => nextPartner(userInterests)}
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                   title="Shortcut: Enter"
                 >
@@ -257,6 +285,8 @@ export default function Chat() {
           <ChatBox 
             messages={messages} 
             onSendMessage={sendMessage} 
+            onTyping={sendTyping}
+            isPartnerTyping={isTyping}
             disabled={chatState !== 'connected'} 
             className="flex-1 border-none bg-transparent min-h-0"
           />
@@ -281,6 +311,8 @@ export default function Chat() {
               <ChatBox 
                 messages={messages} 
                 onSendMessage={sendMessage} 
+                onTyping={sendTyping}
+                isPartnerTyping={isTyping}
                 disabled={chatState !== 'connected'} 
                 className="flex-1 border-none bg-transparent"
               />

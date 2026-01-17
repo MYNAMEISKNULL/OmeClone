@@ -47,6 +47,8 @@ export class DatabaseStorage implements IStorage {
     const existing = await this.getAdmin();
     if (existing) {
       await db.update(admin).set({ maintenanceMode: mode, maintenanceMessage: message }).where(eq(admin.id, existing.id));
+    } else {
+      await db.insert(admin).values({ password: "default_password", maintenanceMode: mode, maintenanceMessage: message });
     }
   }
 }

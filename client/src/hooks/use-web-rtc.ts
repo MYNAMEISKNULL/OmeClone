@@ -14,10 +14,12 @@ interface UseWebRTC {
   remoteStream: MediaStream | null;
   chatState: ChatState;
   messages: { id: string; text: string; isLocal: boolean; timestamp: Date }[];
-  startChat: () => void;
-  nextPartner: () => void;
+  startChat: (interests?: string[]) => void;
+  nextPartner: (interests?: string[]) => void;
   stopChat: () => void;
   sendMessage: (text: string) => void;
+  sendTyping: (isTyping: boolean) => void;
+  isTyping: boolean;
   toggleAudio: () => void;
   toggleVideo: () => void;
   isAudioEnabled: boolean;
@@ -25,6 +27,7 @@ interface UseWebRTC {
   partnerMediaStatus: { audio: boolean; video: boolean };
   onlineCount: number;
   error: string | null;
+  partnerInterests: string[];
 }
 
 export function useWebRTC(): UseWebRTC {
@@ -32,11 +35,13 @@ export function useWebRTC(): UseWebRTC {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [chatState, setChatState] = useState<ChatState>('idle');
   const [messages, setMessages] = useState<{ id: string; text: string; isLocal: boolean; timestamp: Date }[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [partnerMediaStatus, setPartnerMediaStatus] = useState({ audio: true, video: true });
   const [onlineCount, setOnlineCount] = useState(0);
+  const [partnerInterests, setPartnerInterests] = useState<string[]>([]);
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -159,6 +164,7 @@ export function useWebRTC(): UseWebRTC {
       case 'matched':
         setChatState('connected');
         setMessages([]); // Clear chat for new partner
+        setPartnerInterests(msg.interests || []);
         const pc = createPeerConnection();
         if (msg.initiator) {
           try {
@@ -208,6 +214,10 @@ export function useWebRTC(): UseWebRTC {
         }
         break;
 
+      case 'typing':
+        setIsTyping(msg.isTyping);
+        break;
+
       case 'message':
         setMessages(prev => [...prev, { 
           id: Math.random().toString(36).substr(2, 9), 
@@ -220,19 +230,20 @@ export function useWebRTC(): UseWebRTC {
   };
 
   // Actions
-  const startChat = useCallback(() => {
+  const startChat = useCallback((interests?: string[]) => {
     if (!localStream) {
       setError("Please allow camera/mic access to start.");
       return;
     }
     setChatState('waiting');
-    sendWS({ type: 'join' });
+    sendWS({ type: 'join', interests });
   }, [localStream]);
 
-  const nextPartner = useCallback(() => {
+  const nextPartner = useCallback((interests?: string[]) => {
     setRemoteStream(null);
     setChatState('waiting');
     setMessages([]);
+    setIsTyping(false);
     if (pcRef.current) {
       pcRef.current.getSenders().forEach(sender => {
         if (pcRef.current) pcRef.current.removeTrack(sender);
@@ -240,13 +251,14 @@ export function useWebRTC(): UseWebRTC {
       pcRef.current.close();
       pcRef.current = null;
     }
-    sendWS({ type: 'next' });
+    sendWS({ type: 'next', interests });
   }, []);
 
   const stopChat = useCallback(() => {
     setChatState('idle');
     setRemoteStream(null);
     setMessages([]);
+    setIsTyping(false);
     if (pcRef.current) {
       pcRef.current.close();
       pcRef.current = null;
@@ -263,6 +275,11 @@ export function useWebRTC(): UseWebRTC {
       isLocal: true,
       timestamp: new Date()
     }]);
+  }, [chatState]);
+
+  const sendTyping = useCallback((isTyping: boolean) => {
+    if (chatState !== 'connected') return;
+    sendWS({ type: 'typing', isTyping });
   }, [chatState]);
 
   const toggleAudio = useCallback(() => {
@@ -302,6 +319,8 @@ export function useWebRTC(): UseWebRTC {
     nextPartner,
     stopChat,
     sendMessage,
+    sendTyping,
+    isTyping,
     toggleAudio,
     toggleVideo,
     isAudioEnabled,
