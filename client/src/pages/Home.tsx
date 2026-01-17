@@ -43,9 +43,6 @@ export default function Home() {
               Talk to strangers, <br />
               <span className="text-primary">instantly.</span>
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Experience the next generation of anonymous video chat. Simple, fast, and secure. Connect with people from all over the world in seconds.
-            </p>
           </motion.div>
 
           {/* Age Warning */}
