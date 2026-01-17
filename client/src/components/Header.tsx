@@ -15,7 +15,7 @@ export function Header() {
       setTimeout(() => setMenuOpen(false), 200);
     } else {
       setMenuOpen(true);
-      setTimeout(() => setMenuExpanded(true), 150);
+      setTimeout(() => setMenuExpanded(true), 250);
     }
   };
 
@@ -28,14 +28,16 @@ export function Header() {
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-full px-4 flex justify-center pointer-events-none">
       <motion.div
+        initial={false}
         animate={{
-          width: menuOpen ? (menuExpanded ? 800 : 450) : 320,
+          width: menuOpen ? (menuExpanded ? 720 : 540) : 420,
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
           type: "spring",
-          stiffness: 180,
-          damping: 24,
+          stiffness: 160,
+          damping: 26,
+          mass: 1.2
         }}
         className="floating-card rounded-full shadow-2xl overflow-hidden pointer-events-auto w-full max-w-fit px-1"
       >
