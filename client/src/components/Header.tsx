@@ -31,7 +31,7 @@ export function Header() {
       <motion.div
         initial={false}
         animate={{
-          width: menuOpen ? (menuExpanded ? 720 : 540) : 420,
+          width: menuOpen ? (menuExpanded ? 720 : 540) : 580,
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
@@ -40,7 +40,7 @@ export function Header() {
           damping: 26,
           mass: 1.2
         }}
-        className="floating-card rounded-full shadow-2xl overflow-hidden pointer-events-auto w-full max-w-fit px-1"
+        className="floating-card rounded-[2rem] shadow-2xl overflow-hidden pointer-events-auto w-full max-w-fit px-1"
       >
         <div className="h-16 px-6 flex items-center justify-between gap-12">
           <Link href="/">
@@ -55,7 +55,7 @@ export function Header() {
           </Link>
 
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-1 mr-2">
+            <div className="flex items-center gap-1 mr-2">
               {[
                 { label: "Home", href: "/" },
                 { label: "Chat", href: "/chat" },
