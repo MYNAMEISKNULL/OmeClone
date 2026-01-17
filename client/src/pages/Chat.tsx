@@ -136,13 +136,13 @@ export default function Chat() {
                       <span className="text-sm font-bold text-primary animate-bounce">PRESS START TO FIND STRANGER</span>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="flex gap-2">
-                        <div className="w-3 h-3 rounded-full bg-[#00f2ff] animate-bounce-custom [animation-delay:-0.32s]" />
-                        <div className="w-3 h-3 rounded-full bg-[#bc13fe] animate-bounce-custom [animation-delay:-0.16s]" />
-                        <div className="w-3 h-3 rounded-full bg-[#ff0055] animate-bounce-custom" />
+                    <div className="loader-wrapper">
+                      <div className="typing-dots">
+                        <div className="dot animate-bounce-custom [animation-delay:-0.32s] bg-[#00f2ff] w-3 h-3 rounded-full" />
+                        <div className="dot animate-bounce-custom [animation-delay:-0.16s] bg-[#bc13fe] w-3 h-3 rounded-full" />
+                        <div className="dot animate-bounce-custom bg-[#ff0055] w-3 h-3 rounded-full" />
                       </div>
-                      <span className="text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</span>
+                      <div className="status-text mt-4 text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</div>
                     </div>
                   )
                 }
