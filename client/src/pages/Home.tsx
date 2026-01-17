@@ -183,7 +183,6 @@ export default function Home() {
                     <li><Link href="/info?tab=contact" className="hover:text-primary transition-colors">Contact</Link></li>
                   </ul>
                 </div>
-                </div>
                 <div className="space-y-4">
                   <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">Follow Us</h4>
                   <div className="flex gap-4">
