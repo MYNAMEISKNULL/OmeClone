@@ -23,6 +23,7 @@ interface UseWebRTC {
   isAudioEnabled: boolean;
   isVideoEnabled: boolean;
   partnerMediaStatus: { audio: boolean; video: boolean };
+  onlineCount: number;
   error: string | null;
 }
 
@@ -35,6 +36,7 @@ export function useWebRTC(): UseWebRTC {
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [partnerMediaStatus, setPartnerMediaStatus] = useState({ audio: true, video: true });
+  const [onlineCount, setOnlineCount] = useState(0);
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -181,6 +183,10 @@ export function useWebRTC(): UseWebRTC {
         sendWS({ type: 'next' });
         break;
 
+      case 'online_count':
+        setOnlineCount(msg.count);
+        break;
+
       case 'signal':
         if (!pcRef.current) return;
         const data = msg.data;
@@ -301,6 +307,7 @@ export function useWebRTC(): UseWebRTC {
     isAudioEnabled,
     isVideoEnabled,
     partnerMediaStatus,
+    onlineCount,
     error
   };
 }

@@ -28,4 +28,5 @@ export type WSServerMessage =
   | { type: 'matched', initiator: boolean }
   | { type: 'partner_disconnected' }
   | { type: 'signal', data: any }
-  | { type: 'message', content: string };
+  | { type: 'message', content: string }
+  | { type: 'online_count', count: number };

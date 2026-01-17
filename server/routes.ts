@@ -86,12 +86,26 @@ export async function registerRoutes(
 
     ws.on('close', () => {
       handleDisconnect(client);
+      broadcastUserCount();
     });
 
     ws.on('error', () => {
        handleDisconnect(client);
+       broadcastUserCount();
     });
+
+    broadcastUserCount();
   });
+
+  function broadcastUserCount() {
+    const count = clients.size;
+    const message = JSON.stringify({ type: 'online_count', count });
+    clients.forEach((client) => {
+      if (client.ws.readyState === WebSocket.OPEN) {
+        client.ws.send(message);
+      }
+    });
+  }
 
   function handleJoin(client: Client) {
     // If already waiting, do nothing

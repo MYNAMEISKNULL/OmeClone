@@ -24,6 +24,7 @@ export default function Chat() {
     isAudioEnabled,
     isVideoEnabled,
     partnerMediaStatus,
+    onlineCount,
     error 
   } = useWebRTC();
 
@@ -44,7 +45,7 @@ export default function Chat() {
         
         <div className="flex items-center gap-2 text-sm">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <span className="text-muted-foreground font-medium">24,000+ Online</span>
+          <span className="text-muted-foreground font-medium">{onlineCount.toLocaleString()}+ Online</span>
         </div>
       </div>
 
