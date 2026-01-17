@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Menu, X, Video, Shield, MessageSquare, Heart } from "lucide-react";
@@ -10,6 +10,23 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuExpanded, setMenuExpanded] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setMenuExpanded(false);
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   if (location === '/chat') return null;
 
@@ -29,6 +46,7 @@ export function Header() {
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex justify-center pointer-events-none w-full px-4">
       <motion.div
+        ref={containerRef}
         layout
         initial={false}
         style={{ originX: 0.5 }}
@@ -73,18 +91,24 @@ export function Header() {
               className="px-6 pb-6 pt-2"
             >
               <div className="grid grid-cols-3 gap-3">
-                <Button variant="outline" className="h-24 flex-col gap-2 rounded-2xl hover:border-primary/50 group">
-                  <Shield className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium">Safety</span>
-                </Button>
-                <Button variant="outline" className="h-24 flex-col gap-2 rounded-2xl hover:border-accent/50 group">
-                  <Heart className="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium">Feedback</span>
-                </Button>
-                <Button variant="outline" className="h-24 flex-col gap-2 rounded-2xl hover:border-primary/50 group">
-                  <MessageSquare className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium">Contact</span>
-                </Button>
+                <Link href="/safety">
+                  <Button variant="outline" className="w-full h-24 flex-col gap-2 rounded-2xl hover:border-primary/50 group">
+                    <Shield className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-medium">Safety</span>
+                  </Button>
+                </Link>
+                <Link href="/feedback">
+                  <Button variant="outline" className="w-full h-24 flex-col gap-2 rounded-2xl hover:border-accent/50 group">
+                    <Heart className="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-medium">Feedback</span>
+                  </Button>
+                </Link>
+                <Link href="/contact">
+                  <Button variant="outline" className="w-full h-24 flex-col gap-2 rounded-2xl hover:border-primary/50 group">
+                    <MessageSquare className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-medium">Contact</span>
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           )}

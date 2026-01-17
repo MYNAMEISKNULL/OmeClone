@@ -35,6 +35,7 @@ export default function Home() {
 
   const handleMouseLeave = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setIsFooterHovered(false);
   };
 
   return (
