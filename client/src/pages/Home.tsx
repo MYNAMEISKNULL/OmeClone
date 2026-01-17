@@ -23,9 +23,9 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen bg-background overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-y-auto">
       {/* Hero Section */}
-      <section className="relative flex-1 flex flex-col items-center justify-center px-4 overflow-hidden">
+      <section className="relative flex-1 min-h-[600px] flex flex-col items-center justify-center px-4 py-12">
         {/* Background blobs for subtle depth */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
