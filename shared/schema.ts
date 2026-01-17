@@ -19,6 +19,7 @@ export type InsertReport = z.infer<typeof insertReportSchema>;
 export type WSMessage = 
   | { type: 'join' }
   | { type: 'next' }
+  | { type: 'leave' }
   | { type: 'signal', data: any }
   | { type: 'message', content: string };
 

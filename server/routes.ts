@@ -50,7 +50,11 @@ export async function registerRoutes(
           case 'next':
             handleNext(client);
             break;
-            
+
+          case 'leave':
+            handleLeave(client);
+            break;
+
           case 'signal':
             if (client.partnerId) {
               const partner = clients.get(client.partnerId);
@@ -139,6 +143,22 @@ export async function registerRoutes(
     }
     // Re-join queue
     handleJoin(client);
+  }
+
+  function handleLeave(client: Client) {
+    if (client.partnerId) {
+      const partner = clients.get(client.partnerId);
+      if (partner) {
+        partner.partnerId = null;
+        if (partner.ws.readyState === WebSocket.OPEN) {
+          partner.ws.send(JSON.stringify({ type: 'partner_disconnected' }));
+        }
+      }
+      client.partnerId = null;
+    }
+    if (waitingClientId === client.id) {
+      waitingClientId = null;
+    }
   }
 
   function handleDisconnect(client: Client, remove = true) {
