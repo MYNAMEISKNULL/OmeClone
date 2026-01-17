@@ -14,8 +14,8 @@ interface UseWebRTC {
   remoteStream: MediaStream | null;
   chatState: ChatState;
   messages: { id: string; text: string; isLocal: boolean; timestamp: Date }[];
-  startChat: (interests?: string[]) => void;
-  nextPartner: (interests?: string[]) => void;
+  startChat: () => void;
+  nextPartner: () => void;
   stopChat: () => void;
   sendMessage: (text: string) => void;
   sendTyping: (isTyping: boolean) => void;
@@ -27,7 +27,6 @@ interface UseWebRTC {
   partnerMediaStatus: { audio: boolean; video: boolean };
   onlineCount: number;
   error: string | null;
-  partnerInterests: string[];
 }
 
 export function useWebRTC(): UseWebRTC {
@@ -41,7 +40,6 @@ export function useWebRTC(): UseWebRTC {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [partnerMediaStatus, setPartnerMediaStatus] = useState({ audio: true, video: true });
   const [onlineCount, setOnlineCount] = useState(0);
-  const [partnerInterests, setPartnerInterests] = useState<string[]>([]);
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -164,7 +162,6 @@ export function useWebRTC(): UseWebRTC {
       case 'matched':
         setChatState('connected');
         setMessages([]); // Clear chat for new partner
-        setPartnerInterests(msg.interests || []);
         const pc = createPeerConnection();
         if (msg.initiator) {
           try {
@@ -230,16 +227,16 @@ export function useWebRTC(): UseWebRTC {
   };
 
   // Actions
-  const startChat = useCallback((interests?: string[]) => {
+  const startChat = useCallback(() => {
     if (!localStream) {
       setError("Please allow camera/mic access to start.");
       return;
     }
     setChatState('waiting');
-    sendWS({ type: 'join', interests });
+    sendWS({ type: 'join' });
   }, [localStream]);
 
-  const nextPartner = useCallback((interests?: string[]) => {
+  const nextPartner = useCallback(() => {
     setRemoteStream(null);
     setChatState('waiting');
     setMessages([]);
@@ -251,7 +248,7 @@ export function useWebRTC(): UseWebRTC {
       pcRef.current.close();
       pcRef.current = null;
     }
-    sendWS({ type: 'next', interests });
+    sendWS({ type: 'next' });
   }, []);
 
   const stopChat = useCallback(() => {

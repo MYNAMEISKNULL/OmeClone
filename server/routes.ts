@@ -9,7 +9,6 @@ interface Client {
   id: string;
   ws: WebSocket;
   partnerId: string | null;
-  interests: string[];
 }
 
 export async function registerRoutes(
@@ -82,7 +81,7 @@ export async function registerRoutes(
 
   wss.on('connection', (ws) => {
     const id = Math.random().toString(36).substring(7);
-    const client: Client = { id, ws, partnerId: null, interests: [] };
+    const client: Client = { id, ws, partnerId: null };
     clients.set(id, client);
 
     console.log(`Client connected: ${id}`);
@@ -93,12 +92,10 @@ export async function registerRoutes(
         
         switch (message.type) {
           case 'join':
-            client.interests = message.interests || [];
             handleJoin(client);
             break;
             
           case 'next':
-            client.interests = message.interests || [];
             handleNext(client);
             break;
 
@@ -179,39 +176,29 @@ export async function registerRoutes(
       handleDisconnect(client, false);
     }
 
-    // Try to find a match with shared interests
-    let bestMatch: Client | null = null;
-    let maxShared = -1;
+    if (waitingClientId) {
+      const partnerId = waitingClientId;
+      const partner = clients.get(partnerId);
 
-    for (const [id, other] of clients) {
-      if (id === client.id || other.partnerId || other.ws.readyState !== WebSocket.OPEN) continue;
-      
-      // Basic check: is this person in a "waiting" state? 
-      // Our logic currently uses waitingClientId for the single queue.
-      // Let's expand it to check anyone who is not matched.
-      if (id === waitingClientId || !other.partnerId) {
-        const shared = client.interests.filter(i => other.interests.includes(i)).length;
-        if (shared > maxShared) {
-          maxShared = shared;
-          bestMatch = other;
-        }
+      if (partner && partner.ws.readyState === WebSocket.OPEN && partnerId !== client.id) {
+        // Match found
+        waitingClientId = null;
+        
+        client.partnerId = partnerId;
+        partner.partnerId = client.id;
+
+        // Notify both
+        client.ws.send(JSON.stringify({ type: 'matched', initiator: true }));
+        partner.ws.send(JSON.stringify({ type: 'matched', initiator: false }));
+        
+        console.log(`Matched ${client.id} with ${partner.id}`);
+      } else {
+        // Partner gone, become waiting
+        waitingClientId = client.id;
+        client.ws.send(JSON.stringify({ type: 'waiting' }));
       }
-    }
-
-    if (bestMatch) {
-      const partner = bestMatch;
-      if (waitingClientId === partner.id) waitingClientId = null;
-      
-      client.partnerId = partner.id;
-      partner.partnerId = client.id;
-
-      const sharedInterests = client.interests.filter(i => partner.interests.includes(i));
-
-      client.ws.send(JSON.stringify({ type: 'matched', initiator: true, interests: sharedInterests }));
-      partner.ws.send(JSON.stringify({ type: 'matched', initiator: false, interests: sharedInterests }));
-      
-      console.log(`Matched ${client.id} with ${partner.id} (Shared: ${sharedInterests.join(',')})`);
     } else {
+      // No one waiting
       waitingClientId = client.id;
       client.ws.send(JSON.stringify({ type: 'waiting' }));
     }

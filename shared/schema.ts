@@ -45,8 +45,8 @@ export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 
 // WS Message Types
 export type WSMessage = 
-  | { type: 'join', interests?: string[] }
-  | { type: 'next', interests?: string[] }
+  | { type: 'join' }
+  | { type: 'next' }
   | { type: 'leave' }
   | { type: 'signal', data: any }
   | { type: 'message', content: string }
@@ -54,7 +54,7 @@ export type WSMessage =
 
 export type WSServerMessage = 
   | { type: 'waiting' }
-  | { type: 'matched', initiator: boolean, interests?: string[] }
+  | { type: 'matched', initiator: boolean }
   | { type: 'partner_disconnected' }
   | { type: 'signal', data: any }
   | { type: 'message', content: string }
