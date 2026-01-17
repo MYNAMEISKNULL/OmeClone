@@ -36,6 +36,16 @@ export async function registerRoutes(
     res.json(data);
   });
 
+  app.post("/api/admin/login", async (req, res) => {
+    const { password } = req.body;
+    const adminData = await storage.getAdmin();
+    if (adminData && adminData.password === password) {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid password" });
+    }
+  });
+
   app.post("/api/feedback", async (req, res) => {
     try {
       await storage.createFeedback(req.body);

@@ -27,8 +27,17 @@ export const insertFeedbackSchema = createInsertSchema(feedback).pick({
   content: true,
 });
 
-export type Feedback = typeof feedback.$inferSelect;
-export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export const admin = pgTable("admin", {
+  id: serial("id").primaryKey(),
+  password: text("password").notNull(),
+});
+
+export const insertAdminSchema = createInsertSchema(admin).pick({
+  password: true,
+});
+
+export type Admin = typeof admin.$inferSelect;
+export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 
 // WS Message Types
 export type WSMessage = 

@@ -3,16 +3,74 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Report, Feedback } from "@shared/schema";
 import { format } from "date-fns";
-import { Shield, MessageSquare, Clock } from "lucide-react";
+import { Shield, MessageSquare, Clock, Lock } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const { toast } = useToast();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await apiRequest("POST", "/api/admin/login", { password });
+      const data = await res.json();
+      if (data.success) {
+        setIsAuthenticated(true);
+      } else {
+        toast({ title: "Error", description: "Invalid password", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Login failed", variant: "destructive" });
+    }
+  };
+
   const { data: reports, isLoading: loadingReports } = useQuery<Report[]>({
     queryKey: ["/api/admin/reports"],
+    enabled: isAuthenticated,
   });
 
   const { data: feedback, isLoading: loadingFeedback } = useQuery<Feedback[]>({
     queryKey: ["/api/admin/feedback"],
+    enabled: isAuthenticated,
   });
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-6 h-6 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">Admin Login</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-xl h-12"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full h-12 rounded-xl text-lg font-bold">
+                LOGIN
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-8">

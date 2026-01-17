@@ -1,12 +1,14 @@
-import { reports, feedback, type InsertReport, type InsertFeedback, type Report, type Feedback } from "@shared/schema";
+import { reports, feedback, admin, type InsertReport, type InsertFeedback, type InsertAdmin, type Report, type Feedback, type Admin } from "@shared/schema";
 import { db } from "./db";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export interface IStorage {
   createReport(report: InsertReport): Promise<void>;
   getReports(): Promise<Report[]>;
   createFeedback(fb: InsertFeedback): Promise<void>;
   getFeedback(): Promise<Feedback[]>;
+  getAdmin(): Promise<Admin | undefined>;
+  setAdmin(admin: InsertAdmin): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -24,6 +26,20 @@ export class DatabaseStorage implements IStorage {
 
   async getFeedback(): Promise<Feedback[]> {
     return await db.select().from(feedback).orderBy(desc(feedback.createdAt));
+  }
+
+  async getAdmin(): Promise<Admin | undefined> {
+    const [a] = await db.select().from(admin).limit(1);
+    return a;
+  }
+
+  async setAdmin(insertAdmin: InsertAdmin): Promise<void> {
+    const existing = await this.getAdmin();
+    if (existing) {
+      await db.update(admin).set(insertAdmin).where(eq(admin.id, existing.id));
+    } else {
+      await db.insert(admin).values(insertAdmin);
+    }
   }
 }
 
