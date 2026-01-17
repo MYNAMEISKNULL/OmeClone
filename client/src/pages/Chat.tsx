@@ -133,7 +133,7 @@ export default function Chat() {
                 placeholder={
                   chatState === 'idle' ? (
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-sm font-bold text-primary animate-bounce">PRESS START TO FIND STRANGER</span>
+                      <span className="text-sm font-bold text-primary">PRESS START TO FIND STRANGER</span>
                     </div>
                   ) : (
                     <div className="loader-wrapper">
