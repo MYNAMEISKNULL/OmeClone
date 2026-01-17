@@ -13,11 +13,11 @@ interface UseWebRTC {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
   chatState: ChatState;
-  messages: { id: string; content: string; isLocal: boolean }[];
+  messages: { id: string; text: string; isLocal: boolean; timestamp: Date }[];
   startChat: () => void;
   nextPartner: () => void;
   stopChat: () => void;
-  sendMessage: (content: string) => void;
+  sendMessage: (text: string) => void;
   error: string | null;
 }
 
@@ -25,7 +25,7 @@ export function useWebRTC(): UseWebRTC {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [chatState, setChatState] = useState<ChatState>('idle');
-  const [messages, setMessages] = useState<{ id: string; content: string; isLocal: boolean }[]>([]);
+  const [messages, setMessages] = useState<{ id: string; text: string; isLocal: boolean; timestamp: Date }[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -180,8 +180,9 @@ export function useWebRTC(): UseWebRTC {
       case 'message':
         setMessages(prev => [...prev, { 
           id: Math.random().toString(36).substr(2, 9), 
-          content: msg.content, 
-          isLocal: false 
+          text: msg.content, 
+          isLocal: false,
+          timestamp: new Date()
         }]);
         break;
     }
@@ -221,13 +222,14 @@ export function useWebRTC(): UseWebRTC {
     window.location.href = '/'; 
   }, []);
 
-  const sendMessage = useCallback((content: string) => {
-    if (!content.trim() || chatState !== 'connected') return;
-    sendWS({ type: 'message', content });
+  const sendMessage = useCallback((text: string) => {
+    if (!text.trim() || chatState !== 'connected') return;
+    sendWS({ type: 'message', content: text });
     setMessages(prev => [...prev, { 
       id: Math.random().toString(36).substr(2, 9), 
-      content, 
-      isLocal: true 
+      text, 
+      isLocal: true,
+      timestamp: new Date()
     }]);
   }, [chatState]);
 
