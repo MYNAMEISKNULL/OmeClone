@@ -1,4 +1,5 @@
 import { useToast } from "@/hooks/use-toast"
+import { CheckCircle2 } from "lucide-react"
 import {
   Toast,
   ToastClose,
@@ -16,11 +17,14 @@ export function Toaster() {
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props}>
-            <div className="grid gap-1">
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
+            <div className="flex gap-3">
+              <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+              <div className="grid gap-1">
+                {title && <ToastTitle>{title}</ToastTitle>}
+                {description && (
+                  <ToastDescription>{description}</ToastDescription>
+                )}
+              </div>
             </div>
             {action}
             <ToastClose />
