@@ -13,6 +13,7 @@ import Contact from "@/pages/support/Contact";
 import AdminDashboard from "@/pages/AdminDashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
+import { motion } from "framer-motion";
 
 function Router() {
   const [location] = useLocation();
@@ -34,7 +35,7 @@ function Router() {
 
   if (maintenance?.maintenanceMode === "on" && location !== "/admin") {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4 overflow-hidden relative">
+      <div className="min-h-screen bg-black flex items-center justify-center p-4 overflow-hidden relative text-white">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
           <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px]" />
