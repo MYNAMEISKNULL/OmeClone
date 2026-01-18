@@ -2,6 +2,7 @@ services:
   - type: web
     name: omeclone
     runtime: node
+    plan: free
     buildCommand: npm run render-build
     startCommand: npm start
     envVars:
@@ -11,6 +12,8 @@ services:
           property: connectionString
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 20.20.0
     regions: oregon
 
 databases:
