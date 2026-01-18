@@ -68,40 +68,6 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="relative h-10 bg-destructive/10 overflow-hidden rounded-2xl border border-destructive/20 flex items-center justify-center w-full max-w-md mx-auto"
           >
-            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
-              <rect
-                x="0.5"
-                y="0.5"
-                width="calc(100% - 1px)"
-                height="calc(100% - 1px)"
-                rx="15.5"
-                fill="none"
-                stroke="rgba(239, 68, 68, 0.4)"
-                strokeWidth="1"
-                className="opacity-20"
-              />
-              <motion.rect
-                x="0.5"
-                y="0.5"
-                width="calc(100% - 1px)"
-                height="calc(100% - 1px)"
-                rx="15.5"
-                fill="none"
-                stroke="rgb(239, 68, 68)"
-                strokeWidth="2"
-                strokeDasharray="100 2000"
-                initial={{ strokeDashoffset: 0 }}
-                animate={{ strokeDashoffset: -2100 }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                style={{
-                  filter: "drop-shadow(0 0 4px rgba(239, 68, 68, 0.8))",
-                }}
-              />
-            </svg>
             <span className="relative z-10 text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-widest px-6 text-center flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
               You must be 18+ to use this service.
