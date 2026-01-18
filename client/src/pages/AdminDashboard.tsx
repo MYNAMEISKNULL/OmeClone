@@ -231,47 +231,99 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="maintenance" className="mt-6">
+          <TabsContent value="health" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.cpuUsage.toFixed(2)}%</div>
+                  <p className="text-xs text-muted-foreground">System load average</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.memoryUsage.toFixed(1)}%</div>
+                  <p className="text-xs text-muted-foreground">Physical memory in use</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.activeConnections}</div>
+                  <p className="text-xs text-muted-foreground">Real-time WebSocket sessions</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Uptime</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{Math.floor((stats?.uptime || 0) / 3600)}h</div>
+                  <p className="text-xs text-muted-foreground">Total server runtime</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="filters" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Maintenance Mode</CardTitle>
+                <CardTitle>Word Blacklist</CardTitle>
                 <CardDescription>
-                  Shut down the website and show a message to all users.
+                  Messages containing these words will be automatically censored.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between space-x-2">
-                  <Label htmlFor="maintenance-mode" className="flex flex-col space-y-1">
-                    <span>Activate Maintenance Mode</span>
-                    <span className="font-normal text-sm text-muted-foreground">
-                      When active, users will see the maintenance message.
-                    </span>
-                  </Label>
-                  <Switch
-                    id="maintenance-mode"
-                    checked={maintenanceMode}
-                    onCheckedChange={setMaintenanceMode}
-                  />
-                </div>
+              <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="maintenance-message">Maintenance Message</Label>
+                  <Label>Censored Words (Comma separated)</Label>
                   <Textarea
-                    id="maintenance-message"
-                    placeholder="Enter the message to show to users..."
-                    value={maintenanceMessage}
-                    onChange={(e) => setMaintenanceMessage(e.target.value)}
-                    rows={4}
+                    placeholder="badword1, badword2, etc..."
+                    value={wordBlacklist}
+                    onChange={(e) => setWordBlacklist(e.target.value)}
+                    rows={6}
+                    className="font-mono"
                   />
                 </div>
                 <Button 
-                  onClick={() => updateMaintenanceMutation.mutate()}
-                  disabled={updateMaintenanceMutation.isPending}
+                  onClick={() => updateBlacklistMutation.mutate()}
+                  disabled={updateBlacklistMutation.isPending}
                   className="w-full h-12 font-bold"
                 >
-                  {updateMaintenanceMutation.isPending ? "UPDATING..." : "UPDATE SETTINGS"}
+                  {updateBlacklistMutation.isPending ? "UPDATING..." : "SAVE FILTERS"}
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-6">
+            <div className="grid gap-4">
+              {mHistory?.map((h) => (
+                <Card key={h.id}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Power className={`w-4 h-4 ${h.mode === 'on' ? 'text-destructive' : 'text-primary'}`} />
+                      Maintenance: {h.mode.toUpperCase()}
+                    </CardTitle>
+                    <div className="text-xs text-muted-foreground">
+                      {format(new Date(h.createdAt), "MMM d, h:mm a")}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground italic">"{h.message}"</p>
+                  </CardContent>
+                </Card>
+              ))}
+              {(!mHistory || mHistory.length === 0) && (
+                <Card><CardContent className="py-8 text-center text-muted-foreground">No history records found.</CardContent></Card>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
