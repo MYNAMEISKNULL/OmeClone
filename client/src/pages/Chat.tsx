@@ -119,7 +119,8 @@ export default function Chat() {
             variant="outline"
             size="sm"
             onClick={() => setIsTextOnly(!isTextOnly)}
-            className={`h-8 rounded-full border-primary/20 text-[10px] font-bold uppercase tracking-wider transition-all ${isTextOnly ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'}`}
+            disabled={chatState !== 'idle'}
+            className={`h-8 rounded-full border-primary/20 text-[10px] font-bold uppercase tracking-wider transition-all ${isTextOnly ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'} ${chatState !== 'idle' ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isTextOnly ? 'Video: OFF' : 'Video: ON'}
           </Button>
