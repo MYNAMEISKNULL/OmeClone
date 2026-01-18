@@ -12,9 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { ActionLoader, ChatSkeleton } from "@/components/ui/loaders";
-
 import { useFeedback } from "@/hooks/use-feedback";
-
 import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
 
 export default function Chat() {
@@ -44,13 +42,23 @@ export default function Chat() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
   const [isTextOnly, setIsTextOnly] = useState(false);
-  const [iceState, setIceState] = useState<RTCIceConnectionState>('new');
 
   useEffect(() => {
-    if (chatState === 'connected' && !remoteStream && !isTextOnly) {
-      // Logic handled in useWebRTC, but we can track ICE state here if exposed
+    if (chatState === 'connected') {
+      playSound('success');
+      triggerHaptic('heavy');
     }
-  }, [chatState, remoteStream, isTextOnly]);
+  }, [chatState]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage.isLocal) {
+        playSound('message');
+        triggerHaptic('light');
+      }
+    }
+  }, [messages]);
 
   const takeSnapshot = async () => {
     const remoteVideo = document.querySelector('video[data-remote="true"]') as HTMLVideoElement;
@@ -76,11 +84,8 @@ export default function Chat() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts if user is typing in an input or textarea
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        if (e.key === 'Escape') {
-          (e.target as HTMLElement).blur();
-        }
+        if (e.key === 'Escape') (e.target as HTMLElement).blur();
         return;
       }
 
@@ -108,30 +113,8 @@ export default function Chat() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo]);
 
-  useEffect(() => {
-    // startChat(); // Removed automatic start
-  }, [startChat]);
-
-  useEffect(() => {
-    if (chatState === 'connected') {
-      playSound('success');
-      triggerHaptic('heavy');
-    }
-  }, [chatState]);
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
-      if (!lastMessage.isLocal) {
-        playSound('message');
-        triggerHaptic('light');
-      }
-    }
-  }, [messages]);
-
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
-      {/* Top Bar */}
       <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer group">
@@ -192,10 +175,8 @@ export default function Chat() {
       </div>
 
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden">
-        {/* Main Video Area */}
         <div className="flex-1 flex flex-col min-w-0 min-h-0">
           <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden relative">
-            {/* Remote Video */}
             <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={remoteStream} 
@@ -247,7 +228,6 @@ export default function Chat() {
               </div>
             </div>
 
-            {/* Local Video */}
             <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={localStream} 
@@ -309,13 +289,6 @@ export default function Chat() {
             )}
           </div>
 
-          <div className="relative h-7 bg-primary/20 overflow-hidden flex items-center justify-center shrink-0 border-y border-primary/30">
-            <span className="relative z-10 text-[10px] font-bold text-primary uppercase tracking-[0.2em] animate-pulse">
-              Warning: You must be 18+ to use this service. Please report inappropriate behavior.
-            </span>
-          </div>
-
-          {/* Bottom Bar */}
           <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4 shrink-0">
             {chatState === 'idle' ? (
               <Button 
@@ -363,7 +336,6 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Sidebar Chat (Desktop) */}
         <div className="hidden md:flex w-80 h-full border-l border-border flex-col bg-card shrink-0">
           <ChatBox 
             messages={messages} 
@@ -375,7 +347,6 @@ export default function Chat() {
           />
         </div>
 
-        {/* Mobile Chat Drawer */}
         <Drawer open={isChatDrawerOpen} onOpenChange={setIsChatDrawerOpen}>
           <DrawerTrigger asChild>
             <Button
@@ -403,7 +374,6 @@ export default function Chat() {
           </DrawerContent>
         </Drawer>
       </div>
-
       <ReportDialog open={isReportOpen} onOpenChange={setIsReportOpen} />
     </div>
   );
