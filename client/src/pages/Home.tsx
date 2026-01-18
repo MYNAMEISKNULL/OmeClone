@@ -68,19 +68,35 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="relative h-10 bg-destructive/10 overflow-hidden rounded-2xl border border-destructive/20 flex items-center justify-center w-full max-w-md mx-auto"
           >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-destructive/20 to-transparent -skew-x-12"
-              animate={{
-                left: ["-100%", "200%"],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-            <span className="relative z-10 text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-widest px-6 text-center">
+            <div className="absolute inset-0 overflow-hidden">
+              <motion.div
+                className="absolute top-0 left-0 w-24 h-[1px] bg-destructive"
+                animate={{
+                  left: ["-100%", "200%"],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+              <motion.div
+                className="absolute bottom-0 left-0 w-24 h-[1px] bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.8)]"
+                animate={{
+                  left: ["-100%", "200%"],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: 1.5,
+                }}
+              />
+            </div>
+            <span className="relative z-10 text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-widest px-6 text-center flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
               You must be 18+ to use this service.
+              <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
             </span>
           </motion.div>
 

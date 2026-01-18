@@ -202,35 +202,8 @@ export default function Chat() {
 
           {/* Age Warning */}
           <div className="relative h-7 bg-destructive/10 overflow-hidden flex items-center justify-center shrink-0 border-y border-destructive/20">
-            <div className="absolute inset-0 overflow-hidden">
-              <motion.div
-                className="absolute top-0 left-0 w-24 h-[1px] bg-destructive"
-                animate={{
-                  left: ["-100%", "200%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-              <motion.div
-                className="absolute bottom-0 left-0 w-24 h-[1px] bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.8)]"
-                animate={{
-                  left: ["-100%", "200%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                  delay: 1.5,
-                }}
-              />
-            </div>
-            <span className="relative z-10 text-[10px] font-bold text-destructive uppercase tracking-[0.2em] flex items-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
+            <span className="relative z-10 text-[10px] font-bold text-destructive uppercase tracking-[0.2em]">
               Warning: You must be 18+ to use this service. Please report inappropriate behavior.
-              <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
             </span>
           </div>
 
