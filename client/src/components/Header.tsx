@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Menu, X, Video, Shield, MessageSquare, Heart } from "lucide-react";
 
+import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
+
 export function Header() {
   const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,12 +63,14 @@ export function Header() {
         className="bg-card/80 backdrop-blur-xl border border-border shadow-2xl rounded-3xl pointer-events-auto overflow-hidden flex flex-col max-w-full"
       >
         <div className="h-16 flex items-center justify-between px-6 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <Video className="w-5 h-5 text-primary-foreground" />
+          <Link href="/">
+            <div className="flex items-center gap-3 cursor-pointer group">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden bg-background border border-border group-hover:scale-105 transition-transform">
+                <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-cover" />
+              </div>
+              <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
             </div>
-            <span className="font-bold text-foreground text-xl tracking-tight">OmeClone</span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-3">
             <ThemeToggle />

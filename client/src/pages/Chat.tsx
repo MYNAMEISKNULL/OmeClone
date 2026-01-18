@@ -15,6 +15,8 @@ import { ActionLoader, ChatSkeleton } from "@/components/ui/loaders";
 
 import { useFeedback } from "@/hooks/use-feedback";
 
+import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
+
 export default function Chat() {
   const [, setLocation] = useLocation();
   const { playSound, triggerHaptic } = useFeedback();
@@ -131,9 +133,14 @@ export default function Chat() {
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
       {/* Top Bar */}
       <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-foreground text-lg tracking-tight">Ome<span className="text-primary">Clone</span></span>
-        </div>
+        <Link href="/">
+          <div className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-7 h-7 rounded-lg overflow-hidden border border-border group-hover:scale-105 transition-transform">
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <span className="font-bold text-foreground text-lg tracking-tight group-hover:text-primary transition-colors">Ome<span className="text-primary group-hover:text-foreground transition-colors">Clone</span></span>
+          </div>
+        </Link>
         
         <div className="flex items-center gap-4">
           <Button
