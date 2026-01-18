@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   const { data: stats } = useQuery<{ cpuUsage: number; memoryUsage: number; uptime: number; activeConnections: number }>({
     queryKey: ["/api/admin/stats"],
     enabled: isAuthenticated,
-    refetchInterval: 5000,
+    refetchInterval: 3000,
   });
 
   const { data: mHistory } = useQuery<any[]>({
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
               <Activity className="w-4 h-4" />
               Health
             </TabsTrigger>
-            <TabsTrigger value="blacklist" className="gap-2">
+            <TabsTrigger value="filters" className="gap-2">
               <ListFilter className="w-4 h-4" />
               Filters
             </TabsTrigger>
