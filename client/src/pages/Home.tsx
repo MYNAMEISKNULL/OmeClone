@@ -67,20 +67,20 @@ export default function Home() {
         <AnimatePresence>
           {showDonate && (
             <motion.div
-              initial={{ x: -100, opacity: 0 }}
+              initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -100, opacity: 0 }}
+              exit={{ x: 100, opacity: 0 }}
               transition={{ type: "spring", damping: 20, stiffness: 100 }}
-              className="fixed left-0 top-1/4 z-[200] pointer-events-auto"
+              className="fixed right-0 top-1/4 z-[200] pointer-events-auto"
             >
               <Link href="/feedback">
-                <div className="group relative flex items-center bg-primary text-primary-foreground py-2 pl-4 pr-6 rounded-r-2xl shadow-2xl shadow-primary/20 cursor-pointer hover:pl-6 transition-all duration-300">
-                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-r-2xl" />
-                  <span className="flex items-center gap-2 font-bold text-sm tracking-widest uppercase">
-                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                <div className="group relative flex items-center bg-primary text-primary-foreground py-2 pr-4 pl-6 rounded-l-2xl shadow-2xl shadow-primary/20 cursor-pointer hover:pr-6 transition-all duration-300">
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl" />
+                  <span className="flex items-center gap-2 font-bold text-sm tracking-widest uppercase text-right">
                     Support Us
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   </span>
-                  <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-primary/50 blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-primary/50 blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </Link>
             </motion.div>
