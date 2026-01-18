@@ -13,8 +13,11 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { ActionLoader, ChatSkeleton } from "@/components/ui/loaders";
 
+import { useFeedback } from "@/hooks/use-feedback";
+
 export default function Chat() {
   const [, setLocation] = useLocation();
+  const { playSound, triggerHaptic } = useFeedback();
   const { toast } = useToast();
   const { 
     localStream, 
@@ -106,6 +109,23 @@ export default function Chat() {
   useEffect(() => {
     // startChat(); // Removed automatic start
   }, [startChat]);
+
+  useEffect(() => {
+    if (chatState === 'connected') {
+      playSound('success');
+      triggerHaptic('heavy');
+    }
+  }, [chatState]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage.isOwn) {
+        playSound('message');
+        triggerHaptic('light');
+      }
+    }
+  }, [messages]);
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
@@ -294,7 +314,11 @@ export default function Chat() {
             {chatState === 'idle' ? (
               <Button 
                 data-testid="button-start"
-                onClick={startChat}
+                onClick={() => {
+                  playSound('pop');
+                  triggerHaptic('medium');
+                  startChat();
+                }}
                 className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                 title="Shortcut: Enter"
               >
@@ -305,7 +329,11 @@ export default function Chat() {
                 <Button 
                   data-testid="button-stop"
                   variant="destructive"
-                  onClick={stopChat}
+                  onClick={() => {
+                    playSound('click');
+                    triggerHaptic('light');
+                    stopChat();
+                  }}
                   className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
                   title="Shortcut: Esc"
                 >
@@ -313,7 +341,11 @@ export default function Chat() {
                 </Button>
                 <Button 
                   data-testid="button-next"
-                  onClick={nextPartner}
+                  onClick={() => {
+                    playSound('pop');
+                    triggerHaptic('medium');
+                    nextPartner();
+                  }}
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                   title="Shortcut: Enter"
                 >

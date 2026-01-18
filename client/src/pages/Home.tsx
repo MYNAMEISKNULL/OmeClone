@@ -5,8 +5,11 @@ import { Video, Globe, Shield, MessageSquare, Twitter, Github, Mail } from "luci
 import { Link } from "wouter";
 import { useState, useRef, useEffect } from "react";
 
+import { useFeedback } from "@/hooks/use-feedback";
+
 export default function Home() {
   const [, setLocation] = useLocation();
+  const { playSound, triggerHaptic } = useFeedback();
   const [isFooterHovered, setIsFooterHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const footerRef = useRef<HTMLElement>(null);
@@ -144,7 +147,11 @@ export default function Home() {
             <Button 
               size="lg"
               data-testid="button-start-chat"
-              onClick={() => setLocation('/chat')}
+              onClick={() => {
+                playSound('pop');
+                triggerHaptic('medium');
+                setLocation('/chat');
+              }}
               className="relative w-full sm:w-auto h-16 px-10 rounded-2xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group overflow-hidden"
             >
               <motion.div
