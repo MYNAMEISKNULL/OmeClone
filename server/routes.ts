@@ -209,6 +209,7 @@ export async function registerRoutes(
   }
 
   function handleJoin(client: Client) {
+    console.log(`Join request from: ${client.id}`);
     // If already in queue, do nothing
     if (waitingQueue.includes(client.id)) return;
     
@@ -233,7 +234,7 @@ export async function registerRoutes(
         client.ws.send(JSON.stringify({ type: 'matched', initiator: true }));
         potentialPartner.ws.send(JSON.stringify({ type: 'matched', initiator: false }));
         
-        console.log(`Matched ${client.id} with ${potentialPartner.id}`);
+        console.log(`Matched ${client.id} (initiator) with ${potentialPartner.id}`);
         return;
       } else {
         // Remove dead client or self from queue
@@ -244,6 +245,7 @@ export async function registerRoutes(
     // No valid partner found, join queue
     waitingQueue.push(client.id);
     client.ws.send(JSON.stringify({ type: 'waiting' }));
+    console.log(`Added ${client.id} to waiting queue. Current queue length: ${waitingQueue.length}`);
   }
 
   function handleNext(client: Client) {
