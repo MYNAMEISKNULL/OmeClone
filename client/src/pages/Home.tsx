@@ -215,8 +215,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="h-16 flex items-center justify-between text-sm text-muted-foreground font-medium">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md overflow-hidden border border-border">
-                <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+              <div className="w-6 h-6 overflow-hidden">
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-foreground font-bold">OmeClone</span>
             </div>

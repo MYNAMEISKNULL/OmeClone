@@ -65,8 +65,8 @@ export function Header() {
         <div className="h-16 flex items-center justify-between px-6 shrink-0">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden bg-background border border-border group-hover:scale-105 transition-transform">
-                <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-cover" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
             </div>

@@ -135,8 +135,8 @@ export default function Chat() {
       <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-7 h-7 rounded-lg overflow-hidden border border-border group-hover:scale-105 transition-transform">
-              <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+            <div className="w-7 h-7 overflow-hidden group-hover:scale-105 transition-transform">
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-foreground text-lg tracking-tight group-hover:text-primary transition-colors">Ome<span className="text-primary group-hover:text-foreground transition-colors">Clone</span></span>
           </div>
