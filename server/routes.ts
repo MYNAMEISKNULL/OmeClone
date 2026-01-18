@@ -107,7 +107,7 @@ export async function registerRoutes(
   // WebSocket Server
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
   const clients = new Map<string, Client>();
-  let waitingClientId: string | null = null;
+  const waitingQueue: string[] = [];
 
   wss.on('connection', (ws) => {
     const id = Math.random().toString(36).substring(7);
@@ -209,53 +209,45 @@ export async function registerRoutes(
   }
 
   function handleJoin(client: Client) {
-    // If already waiting, do nothing
-    if (waitingClientId === client.id) return;
+    // If already in queue, do nothing
+    if (waitingQueue.includes(client.id)) return;
     
     // If currently paired, disconnect first
     if (client.partnerId) {
       handleDisconnect(client, false);
     }
 
-    if (waitingClientId) {
-      const partnerId = waitingClientId;
-      const partner = clients.get(partnerId);
-
-      if (partner && partner.ws.readyState === WebSocket.OPEN && partnerId !== client.id) {
+    // Clean up queue: remove any dead clients
+    while (waitingQueue.length > 0) {
+      const nextId = waitingQueue[0];
+      const potentialPartner = clients.get(nextId);
+      
+      if (potentialPartner && potentialPartner.ws.readyState === WebSocket.OPEN && nextId !== client.id) {
         // Match found
-        waitingClientId = null;
+        waitingQueue.shift(); // remove from queue
         
-        client.partnerId = partnerId;
-        partner.partnerId = client.id;
+        client.partnerId = nextId;
+        potentialPartner.partnerId = client.id;
 
         // Notify both
         client.ws.send(JSON.stringify({ type: 'matched', initiator: true }));
-        partner.ws.send(JSON.stringify({ type: 'matched', initiator: false }));
+        potentialPartner.ws.send(JSON.stringify({ type: 'matched', initiator: false }));
         
-        console.log(`Matched ${client.id} with ${partner.id}`);
+        console.log(`Matched ${client.id} with ${potentialPartner.id}`);
+        return;
       } else {
-        // Partner gone, become waiting
-        waitingClientId = client.id;
-        client.ws.send(JSON.stringify({ type: 'waiting' }));
+        // Remove dead client or self from queue
+        waitingQueue.shift();
       }
-    } else {
-      // No one waiting
-      waitingClientId = client.id;
-      client.ws.send(JSON.stringify({ type: 'waiting' }));
     }
+
+    // No valid partner found, join queue
+    waitingQueue.push(client.id);
+    client.ws.send(JSON.stringify({ type: 'waiting' }));
   }
 
   function handleNext(client: Client) {
-    if (client.partnerId) {
-      const partner = clients.get(client.partnerId);
-      if (partner) {
-        partner.partnerId = null;
-        if (partner.ws.readyState === WebSocket.OPEN) {
-          partner.ws.send(JSON.stringify({ type: 'partner_disconnected' }));
-        }
-      }
-      client.partnerId = null;
-    }
+    handleLeave(client);
     // Re-join queue
     handleJoin(client);
   }
@@ -271,30 +263,20 @@ export async function registerRoutes(
       }
       client.partnerId = null;
     }
-    if (waitingClientId === client.id) {
-      waitingClientId = null;
+    
+    // Remove from waiting queue
+    const index = waitingQueue.indexOf(client.id);
+    if (index !== -1) {
+      waitingQueue.splice(index, 1);
     }
   }
 
   function handleDisconnect(client: Client, remove = true) {
+    handleLeave(client);
+    
     if (remove) {
       clients.delete(client.id);
       console.log(`Client disconnected: ${client.id}`);
-    }
-
-    if (waitingClientId === client.id) {
-      waitingClientId = null;
-    }
-
-    if (client.partnerId) {
-      const partner = clients.get(client.partnerId);
-      if (partner) {
-        partner.partnerId = null;
-        if (partner.ws.readyState === WebSocket.OPEN) {
-          partner.ws.send(JSON.stringify({ type: 'partner_disconnected' }));
-        }
-      }
-      client.partnerId = null;
     }
   }
 
