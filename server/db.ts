@@ -1,27 +1,17 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 import * as schema from "@shared/schema";
 
-const { Pool } = pg;
+console.log("Checking database configuration...");
 
-console.log("Checking DATABASE_URL environment variable...");
-if (!process.env.DATABASE_URL) {
-  console.error("CRITICAL ERROR: DATABASE_URL is missing!");
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+if (!process.env.TURSO_URL || !process.env.TURSO_AUTH_TOKEN) {
+  console.warn("TURSO_URL or TURSO_AUTH_TOKEN missing. Using local SQLite if available.");
 }
 
-console.log("Database URL found, initializing connection pool...");
-export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
+const client = createClient({
+  url: process.env.TURSO_URL || "file:local.db",
+  authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle database client', err);
-});
-
-console.log("Drizzle ORM initializing...");
-export const db = drizzle(pool, { schema });
-console.log("Database module loaded successfully.");
+export const db = drizzle(client, { schema });
+console.log("Database initialized with Turso/libSQL.");

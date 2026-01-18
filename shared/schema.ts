@@ -1,11 +1,12 @@
-import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
 
-export const reports = pgTable("reports", {
-  id: serial("id").primaryKey(),
+export const reports = sqliteTable("reports", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   reason: text("reason").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
 export const insertReportSchema = createInsertSchema(reports).pick({
@@ -15,11 +16,11 @@ export const insertReportSchema = createInsertSchema(reports).pick({
 export type Report = typeof reports.$inferSelect;
 export type InsertReport = z.infer<typeof insertReportSchema>;
 
-export const feedback = pgTable("feedback", {
-  id: serial("id").primaryKey(),
+export const feedback = sqliteTable("feedback", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   rating: text("rating").notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
 export const insertFeedbackSchema = createInsertSchema(feedback).pick({
@@ -30,19 +31,19 @@ export const insertFeedbackSchema = createInsertSchema(feedback).pick({
 export type Feedback = typeof feedback.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 
-export const admin = pgTable("admin", {
-  id: serial("id").primaryKey(),
+export const admin = sqliteTable("admin", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   password: text("password").notNull(),
   maintenanceMode: text("maintenance_mode").default("off"),
   maintenanceMessage: text("maintenance_message").default("Site is under maintenance. Please check back later."),
   wordBlacklist: text("word_blacklist").default(""),
 });
 
-export const maintenanceHistory = pgTable("maintenance_history", {
-  id: serial("id").primaryKey(),
+export const maintenanceHistory = sqliteTable("maintenance_history", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   mode: text("mode").notNull(),
   message: text("message").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
 export const insertAdminSchema = createInsertSchema(admin).pick({
