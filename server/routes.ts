@@ -208,10 +208,8 @@ export async function registerRoutes(
   });
 
   function broadcastUserCount() {
-    const realCount = clients.size;
-    // Add a base of 1200 + random variation between 50 and 200 to make it look active
-    const fakeCount = 1200 + Math.floor(Math.random() * 150) + realCount;
-    const message = JSON.stringify({ type: 'online_count', count: fakeCount });
+    const count = clients.size;
+    const message = JSON.stringify({ type: 'online_count', count });
     clients.forEach((client) => {
       if (client.ws.readyState === WebSocket.OPEN) {
         client.ws.send(message);
