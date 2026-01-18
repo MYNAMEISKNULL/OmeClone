@@ -89,8 +89,8 @@ export default function Home() {
                 fill="none"
                 stroke="rgb(239, 68, 68)"
                 strokeWidth="2"
-                strokeDasharray="80 300"
-                initial={{ strokeDashoffset: 380 }}
+                strokeDasharray="100 1000"
+                initial={{ strokeDashoffset: 1100 }}
                 animate={{ strokeDashoffset: 0 }}
                 transition={{
                   duration: 4,
