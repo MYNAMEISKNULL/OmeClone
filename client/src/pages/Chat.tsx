@@ -103,7 +103,7 @@ export default function Chat() {
   }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo]);
 
   useEffect(() => {
-    startChat();
+    // startChat(); // Removed automatic start
   }, [startChat]);
 
   return (
