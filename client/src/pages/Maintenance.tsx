@@ -10,7 +10,7 @@ export default function MaintenancePage() {
         transition={{ duration: 1.2, ease: "easeInOut" }}
         className="absolute top-[15%] left-[-10%] h-[60px] bg-accent text-accent-foreground flex items-center whitespace-nowrap font-black uppercase text-lg shadow-2xl -rotate-[15deg] z-20 pointer-events-none select-none"
       >
-        <span className="px-4">⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE</span>
+        <span className="px-4">⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE</span>
       </motion.div>
 
       <motion.div 
@@ -19,7 +19,7 @@ export default function MaintenancePage() {
         transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
         className="absolute top-[5%] right-[-10%] h-[60px] bg-accent text-accent-foreground flex items-center whitespace-nowrap font-black uppercase text-lg shadow-2xl rotate-[10deg] origin-right z-20 pointer-events-none select-none"
       >
-        <span className="px-4">⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE</span>
+        <span className="px-4">⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE</span>
       </motion.div>
 
       <motion.div 
@@ -28,7 +28,7 @@ export default function MaintenancePage() {
         transition={{ duration: 1, delay: 0.1, ease: "easeInOut" }}
         className="absolute bottom-[10%] left-[-5%] h-[60px] bg-accent text-accent-foreground flex items-center whitespace-nowrap font-black uppercase text-lg shadow-2xl rotate-[15deg] z-20 pointer-events-none select-none"
       >
-        <span className="px-4">⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE</span>
+        <span className="px-4">⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE</span>
       </motion.div>
 
       <motion.div 
@@ -37,7 +37,7 @@ export default function MaintenancePage() {
         transition={{ duration: 1.8, delay: 0.5, ease: "easeInOut" }}
         className="absolute bottom-[20%] right-[-10%] h-[60px] bg-accent text-accent-foreground flex items-center whitespace-nowrap font-black uppercase text-lg shadow-2xl -rotate-[8deg] origin-right z-20 pointer-events-none select-none"
       >
-        <span className="px-4">⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE ⚠ MAINTENANCE</span>
+        <span className="px-4">⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE ⚠ UNDER MAINTENANCE</span>
       </motion.div>
 
       {/* Main Content */}
@@ -67,7 +67,7 @@ export default function MaintenancePage() {
           className="inline-block border-b-4 border-primary pb-2"
         >
           <span className="text-4xl md:text-6xl font-black uppercase tracking-widest text-foreground">
-            Maintenance
+            Under Maintenance
           </span>
         </motion.div>
 
