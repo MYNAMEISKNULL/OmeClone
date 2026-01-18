@@ -36,10 +36,14 @@ export function Header() {
     }, 50);
   };
 
-  const endPress = () => {
+  const endPress = (e?: React.MouseEvent | React.TouchEvent) => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     setPressTimer(null);
     setProgress(0);
+    if (e && e.type === 'mouseup' && pressTimer && Date.now() - pressTimer >= 5000) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   };
 
   useEffect(() => {
@@ -91,30 +95,36 @@ export function Header() {
         className="bg-card/80 backdrop-blur-xl border border-border shadow-2xl rounded-3xl pointer-events-auto overflow-hidden flex flex-col max-w-full"
       >
         <div className="h-16 flex items-center justify-between px-6 shrink-0">
-          <Link href="/">
-            <div 
-              className="flex items-center gap-3 cursor-pointer group relative"
-              onMouseDown={startPress}
-              onMouseUp={endPress}
-              onMouseLeave={endPress}
-              onTouchStart={startPress}
-              onTouchEnd={endPress}
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden">
-                {pressTimer !== null && (
-                  <div 
-                    className="absolute inset-0 border-2 border-primary rounded-xl z-20"
-                    style={{ 
-                      clipPath: `inset(${100 - progress}% 0 0 0)`,
-                      transition: 'clip-path 0.05s linear'
-                    }}
-                  />
-                )}
-                <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-contain" />
-              </div>
-              <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
+          <div 
+            className="flex items-center gap-3 cursor-pointer group relative"
+            onMouseDown={startPress}
+            onMouseUp={endPress}
+            onMouseLeave={endPress}
+            onTouchStart={startPress}
+            onTouchEnd={endPress}
+            onClick={(e) => {
+              if (pressTimer && Date.now() - pressTimer >= 5000) {
+                e.preventDefault();
+                e.stopPropagation();
+              } else {
+                setLocation("/");
+              }
+            }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden">
+              {pressTimer !== null && (
+                <div 
+                  className="absolute inset-0 border-2 border-primary rounded-xl z-20"
+                  style={{ 
+                    clipPath: `inset(${100 - progress}% 0 0 0)`,
+                    transition: 'clip-path 0.05s linear'
+                  }}
+                />
+              )}
+              <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-contain" />
             </div>
-          </Link>
+            <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
+          </div>
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
