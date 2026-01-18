@@ -120,7 +120,7 @@ export default function Chat() {
   useEffect(() => {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
-      if (!lastMessage.isOwn) {
+      if (!lastMessage.isLocal) {
         playSound('message');
         triggerHaptic('light');
       }
