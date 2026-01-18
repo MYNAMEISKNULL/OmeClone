@@ -309,9 +309,8 @@ export default function Chat() {
             )}
           </div>
 
-          {/* Age Warning */}
-          <div className="relative h-7 bg-destructive/10 overflow-hidden flex items-center justify-center shrink-0 border-y border-destructive/20">
-            <span className="relative z-10 text-[10px] font-bold text-destructive uppercase tracking-[0.2em]">
+          <div className="relative h-7 bg-primary/20 overflow-hidden flex items-center justify-center shrink-0 border-y border-primary/30">
+            <span className="relative z-10 text-[10px] font-bold text-primary uppercase tracking-[0.2em] animate-pulse">
               Warning: You must be 18+ to use this service. Please report inappropriate behavior.
             </span>
           </div>
