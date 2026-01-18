@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
+import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const { 
     localStream, 
     remoteStream, 

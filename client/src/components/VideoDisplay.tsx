@@ -17,8 +17,9 @@ export function VideoDisplay({
   className,
   muted = false,
   placeholder = "Waiting for partner...",
-  isVideoEnabled = true
-}: VideoDisplayProps) {
+  isVideoEnabled = true,
+  ...props
+}: VideoDisplayProps & React.HTMLAttributes<HTMLDivElement>) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -28,10 +29,13 @@ export function VideoDisplay({
   }, [stream, isVideoEnabled]);
 
   return (
-    <div className={cn(
-      "relative overflow-hidden bg-muted/30 rounded-2xl border border-border shadow-sm group",
-      className
-    )}>
+    <div 
+      className={cn(
+        "relative overflow-hidden bg-muted/30 rounded-2xl border border-border shadow-sm group",
+        className
+      )}
+      {...props}
+    >
       {stream && isVideoEnabled ? (
         <video
           ref={videoRef}
@@ -39,6 +43,7 @@ export function VideoDisplay({
           playsInline
           muted={isLocal || muted}
           className="w-full h-full object-cover"
+          data-remote={!isLocal ? "true" : "false"}
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-muted/20">
