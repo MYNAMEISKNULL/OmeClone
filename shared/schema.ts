@@ -56,6 +56,16 @@ export const insertAdminSchema = createInsertSchema(admin).pick({
 export type Admin = typeof admin.$inferSelect;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+});
+
+export const insertUserSchema = createInsertSchema(users).omit({ id: true });
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+
 // WS Message Types
 export type WSMessage = 
   | { type: 'join' }

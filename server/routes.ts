@@ -2,9 +2,17 @@ import type { Express } from "express";
 import type { Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { api } from "@shared/routes";
 import { z } from "zod";
 import os from "os";
+
+const api = {
+  reports: {
+    create: {
+      path: "/api/reports",
+      input: z.object({ reason: z.string() })
+    }
+  }
+};
 
 interface Client {
   id: string;

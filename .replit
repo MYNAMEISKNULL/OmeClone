@@ -43,3 +43,9 @@ waitForPort = 5000
 
 [agent]
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+TURSO_DATABASE_URL = "libsql://omeclone-omeclone.aws-ap-south-1.turso.io"
+TURSO_AUTH_TOKEN = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Njg3MjU5NjYsImlkIjoiNzVlN2FlZGUtYjhjNS00MWE2LWFmMmMtY2RmY2JiN2MyMGIzIiwicmlkIjoiYTYwYThjNGQtNjQwYS00ZDliLTk0Y2YtZWE3ZTdhYmIxMGZmIn0.UZog-KxF-WVq-oXzbvLyhaBbVaeV4Stb6SMyzsM5Oz1axfjueuIjaXFS5i5a9zNc4YhWRjCoeDpF3RdOwfWABw"
