@@ -7,6 +7,7 @@ OmeClone is an anonymous video chat application similar to Omegle. Users can ins
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Database changes: Must notify user before making schema changes as they require manual execution on Turso.
 
 ## System Architecture
 
