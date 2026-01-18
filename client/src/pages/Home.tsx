@@ -68,31 +68,40 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="relative h-10 bg-destructive/10 overflow-hidden rounded-2xl border border-destructive/20 flex items-center justify-center w-full max-w-md mx-auto"
           >
-            <div className="absolute inset-0 overflow-hidden">
-              <motion.div
-                className="absolute top-0 left-0 w-24 h-[1px] bg-destructive"
-                animate={{
-                  left: ["-100%", "200%"],
-                }}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+              <rect
+                x="0.5"
+                y="0.5"
+                width="calc(100% - 1px)"
+                height="calc(100% - 1px)"
+                rx="15.5"
+                fill="none"
+                stroke="rgba(239, 68, 68, 0.4)"
+                strokeWidth="1"
+                className="opacity-20"
+              />
+              <motion.rect
+                x="0.5"
+                y="0.5"
+                width="calc(100% - 1px)"
+                height="calc(100% - 1px)"
+                rx="15.5"
+                fill="none"
+                stroke="rgb(239, 68, 68)"
+                strokeWidth="2"
+                strokeDasharray="80 300"
+                initial={{ strokeDashoffset: 380 }}
+                animate={{ strokeDashoffset: 0 }}
                 transition={{
-                  duration: 3,
+                  duration: 4,
                   repeat: Infinity,
                   ease: "linear",
                 }}
-              />
-              <motion.div
-                className="absolute bottom-0 left-0 w-24 h-[1px] bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.8)]"
-                animate={{
-                  left: ["-100%", "200%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                  delay: 1.5,
+                style={{
+                  filter: "drop-shadow(0 0 4px rgba(239, 68, 68, 0.8))",
                 }}
               />
-            </div>
+            </svg>
             <span className="relative z-10 text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-widest px-6 text-center flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-destructive animate-pulse" />
               You must be 18+ to use this service.
