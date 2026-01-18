@@ -3,6 +3,7 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { ChatSkeleton } from "./ui/loaders";
 
 interface Message {
   id: string;
@@ -18,9 +19,18 @@ interface ChatBoxProps {
   isPartnerTyping?: boolean;
   disabled?: boolean;
   className?: string;
+  isLoading?: boolean;
 }
 
-export function ChatBox({ messages, onSendMessage, onTyping, isPartnerTyping, disabled, className }: ChatBoxProps) {
+export function ChatBox({ 
+  messages, 
+  onSendMessage, 
+  onTyping, 
+  isPartnerTyping, 
+  disabled, 
+  className,
+  isLoading 
+}: ChatBoxProps) {
   const [inputValue, setInputValue] = useState("");
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -61,41 +71,47 @@ export function ChatBox({ messages, onSendMessage, onTyping, isPartnerTyping, di
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"
       >
-        <div className="text-muted-foreground mb-6 text-center py-2 px-3 bg-muted/30 rounded-lg text-xs md:text-sm">
-          You're connected to a stranger. Say hello!
-        </div>
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={cn(
-              "flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300",
-              msg.isLocal ? "ml-auto items-end" : "items-start"
+        {isLoading ? (
+          <ChatSkeleton />
+        ) : (
+          <>
+            <div className="text-muted-foreground mb-6 text-center py-2 px-3 bg-muted/30 rounded-lg text-xs md:text-sm">
+              You're connected to a stranger. Say hello!
+            </div>
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={cn(
+                  "flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300",
+                  msg.isLocal ? "ml-auto items-end" : "items-start"
+                )}
+              >
+                <div
+                  className={cn(
+                    "px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words shadow-sm",
+                    msg.isLocal 
+                      ? "bg-primary text-primary-foreground rounded-tr-none" 
+                      : "bg-muted text-foreground rounded-tl-none border border-border"
+                  )}
+                >
+                  {msg.text}
+                </div>
+                <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                  {msg.isLocal ? "You" : "Stranger"} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            ))}
+            {isPartnerTyping && (
+              <div className="flex items-center gap-2 p-1 animate-in fade-in slide-in-from-bottom-1">
+                <div className="flex gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-1" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-2" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-3" />
+                </div>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stranger is typing</span>
+              </div>
             )}
-          >
-            <div
-              className={cn(
-                "px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words shadow-sm",
-                msg.isLocal 
-                  ? "bg-primary text-primary-foreground rounded-tr-none" 
-                  : "bg-muted text-foreground rounded-tl-none border border-border"
-              )}
-            >
-              {msg.text}
-            </div>
-            <span className="text-[10px] text-muted-foreground mt-1 px-1">
-              {msg.isLocal ? "You" : "Stranger"} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-        ))}
-        {isPartnerTyping && (
-          <div className="flex items-center gap-2 p-1 animate-in fade-in slide-in-from-bottom-1">
-            <div className="flex gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-1" />
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-2" />
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-dot-3" />
-            </div>
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stranger is typing</span>
-          </div>
+          </>
         )}
       </div>
 

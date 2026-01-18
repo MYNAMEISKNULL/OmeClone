@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { ActionLoader, ChatSkeleton } from "@/components/ui/loaders";
 
 export default function Chat() {
   const [, setLocation] = useLocation();

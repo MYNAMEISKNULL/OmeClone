@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { ActionLoader, Skeleton } from "@/components/ui/loaders";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -183,7 +184,17 @@ export default function AdminDashboard() {
             <TabsContent value="reports" className="mt-0 outline-none">
               <div className="grid gap-3">
                 {loadingReports ? (
-                  <div className="flex justify-center py-20"><Activity className="w-6 h-6 animate-spin text-primary" /></div>
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i} className="bg-card border-border rounded-xl">
+                      <CardHeader className="flex flex-row items-center justify-between pb-3">
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-3 w-32" />
+                      </CardHeader>
+                      <CardContent>
+                        <Skeleton className="h-4 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))
                 ) : reports?.length === 0 ? (
                   <div className="py-20 text-center text-muted-foreground text-sm">No active reports</div>
                 ) : (
@@ -210,7 +221,17 @@ export default function AdminDashboard() {
             <TabsContent value="feedback" className="mt-0 outline-none">
               <div className="grid gap-3">
                 {loadingFeedback ? (
-                  <div className="flex justify-center py-20"><Activity className="w-6 h-6 animate-spin text-primary" /></div>
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i} className="bg-card border-border rounded-xl">
+                      <CardHeader className="flex flex-row items-center justify-between pb-3">
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-3 w-32" />
+                      </CardHeader>
+                      <CardContent>
+                        <Skeleton className="h-4 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))
                 ) : feedback?.length === 0 ? (
                   <div className="py-20 text-center text-muted-foreground text-sm">No user feedback</div>
                 ) : (
