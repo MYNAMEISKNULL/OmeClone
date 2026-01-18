@@ -1,0 +1,182 @@
+✅ Build succeeded
+❌ App crashes immediately on start
+
+Your Render service is crashing during server startup, before Express finishes booting, inside dist/index.cjs at line 82.
+
+This is not a Render problem.
+This is a runtime error in your server code, almost certainly caused by database initialization (Drizzle / Postgres) running at startup without required environment variables.
+
+Proof from your logs
+1️⃣ Build is 100% successful
+==> Build successful 🎉
+
+
+So:
+
+TypeScript compiled fine
+
+Vite client built fine
+
+Server bundle was generated
+
+2️⃣ Crash happens immediately when Node runs
+NODE_ENV=production node dist/index.cjs
+
+
+Then:
+
+/opt/render/project/src/dist/index.cjs:82
+==> Exited with status 1
+
+
+That means:
+
+Node executed the file
+
+Something threw an exception synchronously
+
+The process exited before Express could start listening
+
+3️⃣ Why the log shows huge unreadable code
+
+The massive wall of text you see is minified bundled code, not the real error.
+
+Render cut off the actual error message, but the location tells us enough.
+
+The real root cause (very important)
+
+Your app is running Drizzle ORM database logic at startup.
+
+This part of the log confirms it:
+
+PgDatabase
+
+PgSession
+
+drizzle.prepareQuery
+
+CREATE SCHEMA IF NOT EXISTS
+
+insert into migrations table
+
+SQL builder code everywhere
+
+👉 This means your server is trying to connect to Postgres and run migrations as soon as it starts.
+
+What is failing (most likely)
+🔴 Missing or invalid environment variable on Render
+
+One of these is NOT set or invalid in Render:
+
+DATABASE_URL
+
+POSTGRES_URL
+
+PGHOST
+
+PGUSER
+
+PGPASSWORD
+
+PGDATABASE
+
+PGPORT
+
+Locally it works because:
+
+.env exists
+
+Your local DB is running
+
+On Render:
+
+Environment variables are NOT automatically copied
+
+If DATABASE_URL is missing → instant crash
+
+Why Render shows no clear error message
+
+Because:
+
+Your server code does not wrap DB init in try/catch
+
+The error happens before Express starts
+
+Node exits immediately
+
+So Render only shows:
+
+Exited with status 1
+
+How to FIX this (do exactly this)
+✅ Step 1: Set DB env vars in Render
+
+Go to Render Dashboard → Your Service → Environment
+
+Add exactly one of the following (depending on your setup):
+
+Option A (recommended)
+DATABASE_URL=postgresql://user:password@host:port/dbname
+
+Option B (if not using DATABASE_URL)
+PGHOST=
+PGUSER=
+PGPASSWORD=
+PGDATABASE=
+PGPORT=5432
+
+
+⚠️ Restart the service after adding them.
+
+✅ Step 2: Delay DB connection until server starts
+
+BAD (what you are likely doing now):
+
+// db.ts
+export const db = drizzle(pool); // runs immediately
+
+
+GOOD:
+
+export async function initDB() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is missing");
+  }
+  return drizzle(pool);
+}
+
+
+Then call it after app startup, not at import time.
+
+✅ Step 3: Add startup logging (critical)
+
+Add this at the VERY TOP of your server entry file:
+
+console.log("Starting server...");
+console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+
+
+This will instantly confirm the issue in Render logs.
+
+Why this keeps happening to you
+
+Because your project:
+
+Uses Drizzle + migrations
+
+Runs schema creation automatically
+
+Starts DB logic during module import
+
+On platforms like Render:
+
+Missing env vars = instant crash
+
+No graceful error unless you add logging
+
+Final summary
+
+✔ Render is working correctly
+✔ Build is correct
+❌ Server crashes because DB config is missing or invalid
+❌ Drizzle runs at startup and kills the process
