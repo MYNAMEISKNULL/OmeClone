@@ -16,8 +16,3 @@ services:
         value: 20.20.0
     regions: oregon
     healthCheckPath: /api/health
-
-databases:
-  - name: omeclone-db
-    plan: free
-    ipAllowList: [] # Allow all connections

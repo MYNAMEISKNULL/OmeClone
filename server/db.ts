@@ -2,15 +2,18 @@ import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import * as schema from "@shared/schema";
 
-console.log("Checking database configuration...");
+console.log("Checking database configuration for Turso...");
 
-if (!process.env.TURSO_URL || !process.env.TURSO_AUTH_TOKEN) {
-  console.warn("TURSO_URL or TURSO_AUTH_TOKEN missing. Using local SQLite if available.");
+const tursoUrl = process.env.TURSO_URL;
+const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
+
+if (!tursoUrl) {
+  console.warn("TURSO_URL is missing. Falling back to local SQLite file:local.db");
 }
 
 const client = createClient({
-  url: process.env.TURSO_URL || "file:local.db",
-  authToken: process.env.TURSO_AUTH_TOKEN,
+  url: tursoUrl || "file:local.db",
+  authToken: tursoAuthToken,
 });
 
 export const db = drizzle(client, { schema });
