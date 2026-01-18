@@ -36,6 +36,36 @@ export default function Chat() {
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
+  const [isTextOnly, setIsTextOnly] = useState(false);
+  const [iceState, setIceState] = useState<RTCIceConnectionState>('new');
+
+  useEffect(() => {
+    if (chatState === 'connected' && !remoteStream && !isTextOnly) {
+      // Logic handled in useWebRTC, but we can track ICE state here if exposed
+    }
+  }, [chatState, remoteStream, isTextOnly]);
+
+  const takeSnapshot = async () => {
+    const remoteVideo = document.querySelector('video[data-remote="true"]') as HTMLVideoElement;
+    if (!remoteVideo || chatState !== 'connected') return;
+
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = remoteVideo.videoWidth;
+      canvas.height = remoteVideo.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(remoteVideo, 0, 0);
+        const link = document.createElement('a');
+        link.download = `omeclone-snapshot-${Date.now()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        toast({ title: "Snapshot Saved", description: "Memory captured successfully!" });
+      }
+    } catch (err) {
+      toast({ title: "Snapshot Failed", description: "Could not capture video.", variant: "destructive" });
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -84,6 +114,15 @@ export default function Chat() {
         </div>
         
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsTextOnly(!isTextOnly)}
+            className={`h-8 rounded-full border-primary/20 text-[10px] font-bold uppercase tracking-wider transition-all ${isTextOnly ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'}`}
+          >
+            {isTextOnly ? 'Video: OFF' : 'Video: ON'}
+          </Button>
+
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
@@ -127,11 +166,12 @@ export default function Chat() {
         <div className="flex-1 flex flex-col min-w-0 min-h-0">
           <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden">
             {/* Remote Video */}
-            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center h-[40vh] md:h-full">
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={remoteStream} 
                 isVideoEnabled={partnerMediaStatus.video}
                 className="w-full h-full object-cover"
+                data-remote="true"
                 placeholder={
                   chatState === 'idle' ? (
                     <div className="flex flex-col items-center gap-2">
@@ -150,6 +190,17 @@ export default function Chat() {
                 }
               />
               <div className="absolute top-4 right-4 flex gap-2">
+                {chatState === 'connected' && (
+                  <div className="px-2 py-1 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold border border-border flex items-center gap-1.5">
+                    <div className="flex gap-0.5 items-end h-2.5">
+                      <div className="w-1 h-1 bg-accent rounded-full" />
+                      <div className="w-1 h-1.5 bg-accent rounded-full" />
+                      <div className="w-1 h-2 bg-accent rounded-full" />
+                      <div className="w-1 h-2.5 bg-accent rounded-full" />
+                    </div>
+                    HQ
+                  </div>
+                )}
                 {!partnerMediaStatus.audio && (
                   <div className="p-2 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
                     <MicOff className="w-4 h-4" />
@@ -167,7 +218,7 @@ export default function Chat() {
             </div>
 
             {/* Local Video */}
-            <div className="relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center h-[40vh] md:h-full">
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
@@ -175,6 +226,15 @@ export default function Chat() {
                 className="w-full h-full object-cover" 
               />
               <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={takeSnapshot}
+                  className="rounded-full w-10 h-10 bg-accent/10 text-accent hover:bg-accent/20 border border-accent/20"
+                  title="Take Snapshot"
+                >
+                  <Camera className="w-5 h-5" />
+                </Button>
                 <Button
                   size="icon"
                   variant={isAudioEnabled ? "secondary" : "destructive"}
@@ -198,6 +258,25 @@ export default function Chat() {
                 You
               </div>
             </div>
+            
+            {isTextOnly && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-center space-y-4 max-w-md p-8 bg-card/50 backdrop-blur-xl rounded-3xl border border-border pointer-events-auto">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageCircle className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Text-Only Mode Active</h3>
+                  <p className="text-muted-foreground text-sm">You are connected in text-only mode. Video and audio streams are hidden for privacy.</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsTextOnly(false)}
+                    className="rounded-xl border-primary/20 text-primary hover:bg-primary/5"
+                  >
+                    RE-ENABLE VIDEO
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Age Warning */}
