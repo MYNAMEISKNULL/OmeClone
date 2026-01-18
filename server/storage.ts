@@ -11,9 +11,6 @@ const client = createClient({
 export const db = drizzle(client, { schema });
 
 export interface IStorage {
-  getUser(id: number): Promise<schema.User | undefined>;
-  getUserByUsername(username: string): Promise<schema.User | undefined>;
-  createUser(user: schema.InsertUser): Promise<schema.User>;
   createReport(report: schema.InsertReport): Promise<void>;
   getReports(): Promise<schema.Report[]>;
   createFeedback(fb: schema.InsertFeedback): Promise<void>;
@@ -26,21 +23,6 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<schema.User | undefined> {
-    const [user] = await db.select().from(schema.users).where(eq(schema.users.id, id));
-    return user;
-  }
-
-  async getUserByUsername(username: string): Promise<schema.User | undefined> {
-    const [user] = await db.select().from(schema.users).where(eq(schema.users.username, username));
-    return user;
-  }
-
-  async createUser(insertUser: schema.InsertUser): Promise<schema.User> {
-    const [user] = await db.insert(schema.users).values(insertUser).returning();
-    return user;
-  }
-
   async createReport(insertReport: schema.InsertReport): Promise<void> {
     await db.insert(schema.reports).values(insertReport);
   }
