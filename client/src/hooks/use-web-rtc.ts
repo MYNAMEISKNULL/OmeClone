@@ -131,6 +131,7 @@ export function useWebRTC(): UseWebRTC {
 
     // Set high-quality bandwidth constraints
     pc.oniceconnectionstatechange = () => {
+      console.log('ICE Connection State:', pc.iceConnectionState);
       if (pc.iceConnectionState === 'connected') {
         const senders = pc.getSenders();
         senders.forEach(sender => {
@@ -138,18 +139,18 @@ export function useWebRTC(): UseWebRTC {
             const parameters = sender.getParameters();
             if (!parameters.encodings) parameters.encodings = [{}];
             parameters.encodings[0].maxBitrate = 4000000; // 4Mbps for 1080p
-            sender.setParameters(parameters);
+            sender.setParameters(parameters).catch(e => console.error('Error setting parameters:', e));
           }
         });
       }
-      console.log('ICE Connection State:', pc.iceConnectionState);
-      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected') {
-        toast({
-          title: "Connection Lost",
-          description: "Trying to reconnect...",
-          variant: "destructive"
-        });
-        nextPartner();
+      
+      if (pc.iceConnectionState === 'failed') {
+        console.error('ICE Connection Failed - Restarting ICE');
+        pc.restartIce();
+      }
+      
+      if (pc.iceConnectionState === 'disconnected') {
+        console.log('ICE Disconnected - waiting for potential reconnect');
       }
     };
 
@@ -235,9 +236,11 @@ export function useWebRTC(): UseWebRTC {
         }
 
         if (data.type === 'offer') {
+          console.log('Received offer from partner');
           await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
           
           // Process queued candidates
+          console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
           while (iceCandidatesQueue.current.length > 0) {
             const candidate = iceCandidatesQueue.current.shift();
             if (candidate && pcRef.current) {
@@ -248,10 +251,13 @@ export function useWebRTC(): UseWebRTC {
           const answer = await pcRef.current.createAnswer();
           await pcRef.current.setLocalDescription(answer);
           sendSignal({ type: 'answer', sdp: answer });
+          console.log('Sent answer to partner');
         } else if (data.type === 'answer') {
+          console.log('Received answer from partner');
           await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
           
           // Process queued candidates
+          console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
           while (iceCandidatesQueue.current.length > 0) {
             const candidate = iceCandidatesQueue.current.shift();
             if (candidate && pcRef.current) {
@@ -263,6 +269,7 @@ export function useWebRTC(): UseWebRTC {
           if (pcRef.current?.remoteDescription) {
             await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
           } else {
+            console.log('Queuing early candidate');
             iceCandidatesQueue.current.push(candidate);
           }
         }
