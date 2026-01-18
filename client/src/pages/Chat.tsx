@@ -167,9 +167,9 @@ export default function Chat() {
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden">
         {/* Main Video Area */}
         <div className="flex-1 flex flex-col min-w-0 min-h-0">
-          <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden">
+          <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden relative">
             {/* Remote Video */}
-            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={remoteStream} 
                 isVideoEnabled={partnerMediaStatus.video}
@@ -221,7 +221,7 @@ export default function Chat() {
             </div>
 
             {/* Local Video */}
-            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
