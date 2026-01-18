@@ -49,7 +49,21 @@ export function useWebRTC(): UseWebRTC {
   useEffect(() => {
     async function initMedia() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: {
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            frameRate: { ideal: 30, max: 60 },
+            facingMode: "user"
+          }, 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            sampleSize: 24,
+            sampleRate: 48000
+          } 
+        });
         setLocalStream(stream);
       } catch (err) {
         console.error('Failed to access media devices:', err);
@@ -108,13 +122,19 @@ export function useWebRTC(): UseWebRTC {
     const pc = new RTCPeerConnection(ICE_SERVERS);
     pcRef.current = pc;
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        sendSignal({ type: 'candidate', candidate: event.candidate });
-      }
-    };
-
+    // Set high-quality bandwidth constraints
     pc.oniceconnectionstatechange = () => {
+      if (pc.iceConnectionState === 'connected') {
+        const senders = pc.getSenders();
+        senders.forEach(sender => {
+          if (sender.track?.kind === 'video') {
+            const parameters = sender.getParameters();
+            if (!parameters.encodings) parameters.encodings = [{}];
+            parameters.encodings[0].maxBitrate = 4000000; // 4Mbps for 1080p
+            sender.setParameters(parameters);
+          }
+        });
+      }
       console.log('ICE Connection State:', pc.iceConnectionState);
       if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected') {
         toast({
@@ -123,6 +143,12 @@ export function useWebRTC(): UseWebRTC {
           variant: "destructive"
         });
         nextPartner();
+      }
+    };
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        sendSignal({ type: 'candidate', candidate: event.candidate });
       }
     };
 
