@@ -146,16 +146,13 @@ export function useWebRTC(): UseWebRTC {
       }
       
       if (pc.iceConnectionState === 'failed') {
-        console.error('ICE Connection Failed - Restarting ICE');
-        pc.restartIce().catch(err => {
-          console.error('Restart ICE failed:', err);
-          toast({
-            title: "Connection Failed",
-            description: "Handshake failed. Finding new partner...",
-            variant: "destructive"
-          });
-          nextPartner();
+        console.error('ICE Connection Failed - Moving to next stranger');
+        toast({
+          title: "Connection Failed",
+          description: "Handshake failed. Finding new partner...",
+          variant: "destructive"
         });
+        nextPartner();
       }
       
       if (pc.iceConnectionState === 'disconnected') {
