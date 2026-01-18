@@ -195,7 +195,9 @@ export default function Chat() {
                         <div className="dot animate-dot-2 bg-[#bc13fe] w-3 h-3 rounded-full" />
                         <div className="dot animate-dot-3 bg-[#ff0055] w-3 h-3 rounded-full" />
                       </div>
-                      <div className="status-text mt-4 text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</div>
+                      <div className="status-text mt-4 text-sm font-medium text-muted-foreground/60 tracking-wider animate-pulse">
+                        {Math.random() > 0.5 ? "SEARCHING FOR INTERESTING PEOPLE..." : "CONNECTING TO GLOBAL NETWORK..."}
+                      </div>
                     </div>
                   )
                 }
