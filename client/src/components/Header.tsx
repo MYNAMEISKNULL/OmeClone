@@ -85,7 +85,7 @@ export function Header() {
         initial={false}
         style={{ originX: 0.5 }}
         animate={{
-          width: menuOpen ? (menuExpanded ? (window.innerWidth < 640 ? "100%" : 720) : (window.innerWidth < 640 ? "90%" : 540)) : (window.innerWidth < 640 ? "85%" : (window.innerWidth < 1024 ? 200 : 420)),
+          width: menuOpen ? (menuExpanded ? (window.innerWidth < 640 ? "100%" : 720) : (window.innerWidth < 640 ? "90%" : 540)) : (window.innerWidth < 640 ? "85%" : 420),
           height: menuExpanded ? "auto" : 64,
         }}
         transition={{
@@ -123,7 +123,7 @@ export function Header() {
               )}
               <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors hidden lg:block">OmeClone</span>
+            <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
           </div>
 
           <div className="flex items-center gap-3">
