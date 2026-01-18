@@ -3,12 +3,16 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Menu, X, Video, Shield, MessageSquare, Heart } from "lucide-react";
+import { Menu, X, Shield, MessageSquare, Heart, Zap, ZapOff } from "lucide-react";
+import { useUIMode } from "@/hooks/use-ui-mode";
+import { useWebRTC } from "@/hooks/use-web-rtc";
 
 import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
 
 export function Header() {
   const [location, setLocation] = useLocation();
+  const { mode, setMode, isLite } = useUIMode();
+  const { onlineCount } = useWebRTC();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuExpanded, setMenuExpanded] = useState(false);
   const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -127,6 +131,15 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMode(isLite ? "full" : "lite")}
+              className={`rounded-xl transition-colors ${isLite ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
+              title={isLite ? "Switch to Full Mode" : "Switch to Lite Mode"}
+            >
+              {isLite ? <ZapOff className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
+            </Button>
             <ThemeToggle />
             <Button
               data-testid="button-menu"
