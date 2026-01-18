@@ -201,11 +201,17 @@ export function useWebRTC(): UseWebRTC {
         const pc = createPeerConnection();
         if (msg.initiator) {
           try {
-            const offer = await pc.createOffer();
+            console.log('Initiating offer as initiator');
+            const offer = await pc.createOffer({
+              offerToReceiveAudio: true,
+              offerToReceiveVideo: true
+            });
             await pc.setLocalDescription(offer);
             sendSignal({ type: 'offer', sdp: offer });
           } catch (err) {
             console.error('Error creating offer:', err);
+            setError('Failed to establish connection. Trying next stranger...');
+            nextPartner();
           }
         }
         break;
@@ -237,37 +243,53 @@ export function useWebRTC(): UseWebRTC {
 
         if (data.type === 'offer') {
           console.log('Received offer from partner');
-          await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+          if (!pcRef.current) return;
           
-          // Process queued candidates
-          console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
-          while (iceCandidatesQueue.current.length > 0) {
-            const candidate = iceCandidatesQueue.current.shift();
-            if (candidate && pcRef.current) {
-              await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+          try {
+            await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            
+            // Process queued candidates
+            console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
+            while (iceCandidatesQueue.current.length > 0) {
+              const candidate = iceCandidatesQueue.current.shift();
+              if (candidate && pcRef.current) {
+                await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.warn('Queued candidate error:', e));
+              }
             }
-          }
 
-          const answer = await pcRef.current.createAnswer();
-          await pcRef.current.setLocalDescription(answer);
-          sendSignal({ type: 'answer', sdp: answer });
-          console.log('Sent answer to partner');
+            const answer = await pcRef.current.createAnswer();
+            await pcRef.current.setLocalDescription(answer);
+            sendSignal({ type: 'answer', sdp: answer });
+            console.log('Sent answer to partner');
+          } catch (err) {
+            console.error('Error handling offer:', err);
+            nextPartner();
+          }
         } else if (data.type === 'answer') {
           console.log('Received answer from partner');
-          await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+          if (!pcRef.current) return;
           
-          // Process queued candidates
-          console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
-          while (iceCandidatesQueue.current.length > 0) {
-            const candidate = iceCandidatesQueue.current.shift();
-            if (candidate && pcRef.current) {
-              await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+          try {
+            await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            
+            // Process queued candidates
+            console.log(`Processing ${iceCandidatesQueue.current.length} queued candidates`);
+            while (iceCandidatesQueue.current.length > 0) {
+              const candidate = iceCandidatesQueue.current.shift();
+              if (candidate && pcRef.current) {
+                await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.warn('Queued candidate error:', e));
+              }
             }
+          } catch (err) {
+            console.error('Error handling answer:', err);
+            nextPartner();
           }
         } else if (data.type === 'candidate') {
           const candidate = data.candidate;
-          if (pcRef.current?.remoteDescription) {
-            await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+          if (pcRef.current?.remoteDescription && pcRef.current.signalingState !== 'closed') {
+            pcRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => {
+              console.warn('Error adding ICE candidate:', e);
+            });
           } else {
             console.log('Queuing early candidate');
             iceCandidatesQueue.current.push(candidate);
