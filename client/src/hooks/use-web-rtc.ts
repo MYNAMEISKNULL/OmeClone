@@ -132,7 +132,8 @@ export function useWebRTC(): UseWebRTC {
     // Set high-quality bandwidth constraints
     pc.oniceconnectionstatechange = () => {
       console.log('ICE Connection State:', pc.iceConnectionState);
-      if (pc.iceConnectionState === 'connected') {
+      
+      if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
         const senders = pc.getSenders();
         senders.forEach(sender => {
           if (sender.track?.kind === 'video') {
@@ -146,11 +147,26 @@ export function useWebRTC(): UseWebRTC {
       
       if (pc.iceConnectionState === 'failed') {
         console.error('ICE Connection Failed - Restarting ICE');
-        pc.restartIce();
+        pc.restartIce().catch(err => {
+          console.error('Restart ICE failed:', err);
+          toast({
+            title: "Connection Failed",
+            description: "Handshake failed. Finding new partner...",
+            variant: "destructive"
+          });
+          nextPartner();
+        });
       }
       
       if (pc.iceConnectionState === 'disconnected') {
-        console.log('ICE Disconnected - waiting for potential reconnect');
+        console.log('ICE Disconnected - attempting automatic recovery');
+        // Wait a bit for potential auto-reconnect, otherwise next
+        setTimeout(() => {
+          if (pcRef.current && (pcRef.current.iceConnectionState === 'disconnected' || pcRef.current.iceConnectionState === 'failed')) {
+            console.log('ICE still disconnected after timeout, moving to next partner');
+            nextPartner();
+          }
+        }, 5000);
       }
     };
 
@@ -286,6 +302,8 @@ export function useWebRTC(): UseWebRTC {
           }
         } else if (data.type === 'candidate') {
           const candidate = data.candidate;
+          if (!candidate || !candidate.candidate) return;
+
           if (pcRef.current?.remoteDescription && pcRef.current.signalingState !== 'closed') {
             pcRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => {
               console.warn('Error adding ICE candidate:', e);
