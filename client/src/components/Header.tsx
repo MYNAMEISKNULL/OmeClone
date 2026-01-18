@@ -8,11 +8,39 @@ import { Menu, X, Video, Shield, MessageSquare, Heart } from "lucide-react";
 import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
 
 export function Header() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuExpanded, setMenuExpanded] = useState(false);
+  const [pressTimer, setPressTimer] = useState<number | null>(null);
+  const [progress, setProgress] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout>();
+
+  const startPress = () => {
+    const startTime = Date.now();
+    setPressTimer(startTime);
+    setProgress(0);
+    
+    progressIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / 5000) * 100, 100);
+      setProgress(newProgress);
+      
+      if (elapsed >= 5000) {
+        clearInterval(progressIntervalRef.current);
+        setLocation("/admin");
+        setPressTimer(null);
+        setProgress(0);
+      }
+    }, 50);
+  };
+
+  const endPress = () => {
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    setPressTimer(null);
+    setProgress(0);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,8 +92,24 @@ export function Header() {
       >
         <div className="h-16 flex items-center justify-between px-6 shrink-0">
           <Link href="/">
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div 
+              className="flex items-center gap-3 cursor-pointer group relative"
+              onMouseDown={startPress}
+              onMouseUp={endPress}
+              onMouseLeave={endPress}
+              onTouchStart={startPress}
+              onTouchEnd={endPress}
+            >
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden">
+                {pressTimer !== null && (
+                  <div 
+                    className="absolute inset-0 border-2 border-primary rounded-xl z-20"
+                    style={{ 
+                      clipPath: `inset(${100 - progress}% 0 0 0)`,
+                      transition: 'clip-path 0.05s linear'
+                    }}
+                  />
+                )}
                 <img src={logoUrl} alt="OmeClone Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors">OmeClone</span>
