@@ -59,7 +59,7 @@ export function ChatBox({ messages, onSendMessage, onTyping, isPartnerTyping, di
     <div className={cn("flex flex-col h-full bg-card", className)}>
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none md:scrollbar-thin scrollbar-thumb-border"
+        className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"
       >
         <div className="text-muted-foreground mb-6 text-center py-2 px-3 bg-muted/30 rounded-lg text-xs md:text-sm">
           You're connected to a stranger. Say hello!

@@ -166,7 +166,9 @@ export async function registerRoutes(
                 
                 let content = message.content;
                 for (const word of blacklist) {
-                  const regex = new RegExp(word, 'gi');
+                  // Escape regex special characters to avoid issues with words like "test*"
+                  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
                   content = content.replace(regex, '***');
                 }
 
