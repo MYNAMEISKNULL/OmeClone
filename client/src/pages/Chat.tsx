@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
