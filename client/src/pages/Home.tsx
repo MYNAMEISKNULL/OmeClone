@@ -38,28 +38,51 @@ export default function Home() {
     setIsFooterHovered(false);
   };
 
-  return (
-    <div className="h-screen w-screen bg-background flex flex-col overflow-hidden fixed inset-0">
-      {/* Hero Section */}
-      <section className="relative flex-1 flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
-        {/* Background blobs for subtle depth */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]" />
-        </div>
+    const [textIndex, setTextIndex] = useState(0);
+    const words = ["instantly.", "securely.", "directly."];
 
-        <div className="max-w-4xl mx-auto text-center space-y-8 flex flex-col items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center"
-          >
-            <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground">
-              Talk to strangers, <br />
-              <span className="text-primary">instantly.</span>
-            </h1>
-          </motion.div>
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setTextIndex((prev) => (prev + 1) % words.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }, []);
+
+    return (
+      <div className="h-screen w-screen bg-background flex flex-col overflow-hidden fixed inset-0">
+        {/* Hero Section */}
+        <section className="relative flex-1 flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
+          {/* Background blobs for subtle depth */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]" />
+          </div>
+
+          <div className="max-w-4xl mx-auto text-center space-y-8 flex flex-col items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center"
+            >
+              <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground">
+                Talk to strangers, <br />
+                <div className="h-[1.2em] overflow-hidden flex justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={words[textIndex]}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="text-primary block"
+                    >
+                      {words[textIndex]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </h1>
+            </motion.div>
 
           {/* Age Warning */}
           <motion.div
