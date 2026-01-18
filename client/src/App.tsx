@@ -46,7 +46,7 @@ function Router() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative z-10 w-full max-w-lg"
         >
-          <Card className="bg-card/50 backdrop-blur-2xl border-primary/20 shadow-[0_0_50px_-12px_rgba(var(--primary),0.2)] rounded-[2.5rem] overflow-hidden">
+          <Card className="bg-card/50 backdrop-blur-2xl border-primary/20 shadow-[0_0_50px_-12px_rgba(37,99,235,0.2)] rounded-[2.5rem] overflow-hidden">
             <CardContent className="pt-12 pb-14 text-center space-y-8">
               <div className="relative w-24 h-24 mx-auto">
                 <motion.div
