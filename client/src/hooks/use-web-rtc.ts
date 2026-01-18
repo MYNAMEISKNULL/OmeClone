@@ -43,6 +43,7 @@ export function useWebRTC(): UseWebRTC {
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
+  const iceCandidatesQueue = useRef<RTCIceCandidateInit[]>([]);
   const { toast } = useToast();
 
   // Initialize Local Media
@@ -179,6 +180,7 @@ export function useWebRTC(): UseWebRTC {
         setChatState('waiting');
         setRemoteStream(null);
         setMessages([]);
+        iceCandidatesQueue.current = [];
         if (pcRef.current) {
           pcRef.current.close();
           pcRef.current = null;
@@ -188,6 +190,7 @@ export function useWebRTC(): UseWebRTC {
       case 'matched':
         setChatState('connected');
         setMessages([]); // Clear chat for new partner
+        iceCandidatesQueue.current = [];
         const pc = createPeerConnection();
         if (msg.initiator) {
           try {
@@ -227,13 +230,35 @@ export function useWebRTC(): UseWebRTC {
 
         if (data.type === 'offer') {
           await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+          
+          // Process queued candidates
+          while (iceCandidatesQueue.current.length > 0) {
+            const candidate = iceCandidatesQueue.current.shift();
+            if (candidate && pcRef.current) {
+              await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+          }
+
           const answer = await pcRef.current.createAnswer();
           await pcRef.current.setLocalDescription(answer);
           sendSignal({ type: 'answer', sdp: answer });
         } else if (data.type === 'answer') {
           await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+          
+          // Process queued candidates
+          while (iceCandidatesQueue.current.length > 0) {
+            const candidate = iceCandidatesQueue.current.shift();
+            if (candidate && pcRef.current) {
+              await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+          }
         } else if (data.type === 'candidate') {
-          await pcRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+          const candidate = data.candidate;
+          if (pcRef.current?.remoteDescription) {
+            await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+          } else {
+            iceCandidatesQueue.current.push(candidate);
+          }
         }
         break;
 
