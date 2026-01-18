@@ -247,7 +247,6 @@ export function useWebRTC(): UseWebRTC {
         break;
 
       case 'partner_disconnected':
-        toast({ title: "Partner disconnected", description: "Finding new partner..." });
         setChatState('waiting');
         setRemoteStream(null);
         if (pcRef.current) {
