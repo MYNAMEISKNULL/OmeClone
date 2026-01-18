@@ -1,28 +1,6 @@
 import { motion } from "framer-motion";
-import { useUIMode } from "@/hooks/use-ui-mode";
 
 export default function MaintenancePage() {
-  const { isLite } = useUIMode();
-
-  if (isLite) {
-    return (
-      <div className="fixed inset-0 w-full h-full bg-background flex flex-col justify-center items-center overflow-hidden font-sans">
-        <div className="text-center px-4">
-          <h1 className="text-7xl md:text-9xl font-heading font-bold text-foreground mb-2">Oops!</h1>
-          <h2 className="text-2xl md:text-3xl font-heading font-light text-muted-foreground mb-4">Website is</h2>
-          <div className="inline-block border-b-4 border-primary pb-2">
-            <span className="text-4xl md:text-6xl font-black uppercase tracking-widest text-foreground">
-              Under Maintenance
-            </span>
-          </div>
-          <div className="mt-8 text-xl md:text-2xl font-bold tracking-[0.3em] text-primary uppercase">
-            Coming Soon...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="fixed inset-0 w-full h-full bg-background flex flex-col justify-center items-center overflow-hidden font-sans">
       {/* Construction Tapes */}

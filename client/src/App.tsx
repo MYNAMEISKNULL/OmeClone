@@ -16,7 +16,6 @@ import { AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 
 import MaintenancePage from "@/pages/Maintenance";
-import { UIModeProvider } from "@/hooks/use-ui-mode";
 
 function Router() {
   const [location] = useLocation();
@@ -60,15 +59,13 @@ import { ThemeProvider } from "./components/theme-provider";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <UIModeProvider>
-        <ThemeProvider defaultTheme="dark" storageKey="nexus-theme">
-          <TooltipProvider delayDuration={0}>
-            <Header />
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </ThemeProvider>
-      </UIModeProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="nexus-theme">
+        <TooltipProvider delayDuration={0}>
+          <Header />
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -13,12 +13,10 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { ActionLoader, ChatSkeleton } from "@/components/ui/loaders";
 import { useFeedback } from "@/hooks/use-feedback";
-import { useUIMode } from "@/hooks/use-ui-mode";
 import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
-  const { isLite } = useUIMode();
   const { playSound, triggerHaptic } = useFeedback();
   const { toast } = useToast();
   const { 
@@ -179,7 +177,7 @@ export default function Chat() {
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 min-h-0">
           <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2 min-h-0 overflow-hidden relative">
-            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center min-h-[40vh] md:min-h-0 ${isLite ? '' : 'transition-all duration-500'} ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={remoteStream} 
                 isVideoEnabled={partnerMediaStatus.video}
@@ -193,9 +191,9 @@ export default function Chat() {
                   ) : (
                     <div className="loader-wrapper">
                       <div className="typing-dots">
-                        <div className={`dot bg-[#00f2ff] w-3 h-3 rounded-full ${isLite ? '' : 'animate-dot-1'}`} />
-                        <div className={`dot bg-[#bc13fe] w-3 h-3 rounded-full ${isLite ? '' : 'animate-dot-2'}`} />
-                        <div className={`dot bg-[#ff0055] w-3 h-3 rounded-full ${isLite ? '' : 'animate-dot-3'}`} />
+                        <div className="dot animate-dot-1 bg-[#00f2ff] w-3 h-3 rounded-full" />
+                        <div className="dot animate-dot-2 bg-[#bc13fe] w-3 h-3 rounded-full" />
+                        <div className="dot animate-dot-3 bg-[#ff0055] w-3 h-3 rounded-full" />
                       </div>
                       <div className="status-text mt-4 text-sm font-medium text-muted-foreground/60 tracking-wider">FINDING STRANGER...</div>
                     </div>
@@ -204,7 +202,7 @@ export default function Chat() {
               />
               <div className="absolute top-4 right-4 flex gap-2">
                 {chatState === 'connected' && (
-                  <div className={`px-2 py-1 bg-background rounded-full text-[10px] font-bold border border-border flex items-center gap-1.5 ${isLite ? '' : 'backdrop-blur-md bg-background/80'}`}>
+                  <div className="px-2 py-1 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold border border-border flex items-center gap-1.5">
                     <div className="flex gap-0.5 items-end h-2.5">
                       <div className="w-1 h-1 bg-accent rounded-full" />
                       <div className="w-1 h-1.5 bg-accent rounded-full" />
@@ -215,22 +213,22 @@ export default function Chat() {
                   </div>
                 )}
                 {!partnerMediaStatus.audio && (
-                  <div className={`p-2 bg-destructive/10 rounded-full text-destructive border border-destructive/20 ${isLite ? '' : 'backdrop-blur-md'}`}>
+                  <div className="p-2 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
                     <MicOff className="w-4 h-4" />
                   </div>
                 )}
                 {!partnerMediaStatus.video && (
-                  <div className={`p-2 bg-destructive/10 rounded-full text-destructive border border-destructive/20 ${isLite ? '' : 'backdrop-blur-md'}`}>
+                  <div className="p-2 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
                     <CameraOff className="w-4 h-4" />
                   </div>
                 )}
               </div>
-              <div className={`absolute bottom-4 left-4 px-3 py-1 bg-background rounded-full text-xs font-medium text-foreground border border-border ${isLite ? '' : 'backdrop-blur-md bg-background/80'}`}>
+              <div className="absolute bottom-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
                 Stranger
               </div>
             </div>
 
-            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center min-h-[40vh] md:min-h-0 ${isLite ? '' : 'transition-all duration-500'} ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 min-h-[40vh] md:min-h-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
@@ -242,7 +240,7 @@ export default function Chat() {
                   size="icon"
                   variant="secondary"
                   onClick={takeSnapshot}
-                  className={`rounded-full w-10 h-10 bg-accent/10 text-accent hover:bg-accent/20 border border-accent/20`}
+                  className="rounded-full w-10 h-10 bg-accent/10 text-accent hover:bg-accent/20 border border-accent/20"
                   title="Take Snapshot"
                 >
                   <Camera className="w-5 h-5" />
@@ -266,14 +264,14 @@ export default function Chat() {
                   {isVideoEnabled ? <Camera className="w-5 h-5" /> : <CameraOff className="w-5 h-5" />}
                 </Button>
               </div>
-              <div className={`absolute bottom-4 left-4 px-3 py-1 bg-background rounded-full text-xs font-medium text-foreground border border-border ${isLite ? '' : 'backdrop-blur-md bg-background/80'}`}>
+              <div className="absolute bottom-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs font-medium text-foreground border border-border">
                 You
               </div>
             </div>
             
             {isTextOnly && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className={`text-center space-y-4 max-w-md p-8 bg-card rounded-3xl border border-border pointer-events-auto ${isLite ? '' : 'backdrop-blur-xl bg-card/50'}`}>
+                <div className="text-center space-y-4 max-w-md p-8 bg-card/50 backdrop-blur-xl rounded-3xl border border-border pointer-events-auto">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <MessageCircle className="w-8 h-8 text-primary" />
                   </div>
@@ -282,7 +280,7 @@ export default function Chat() {
                   <Button 
                     variant="outline" 
                     onClick={() => setIsTextOnly(false)}
-                    className={`rounded-xl border-primary/20 text-primary ${isLite ? '' : 'hover:bg-primary/5'}`}
+                    className="rounded-xl border-primary/20 text-primary hover:bg-primary/5"
                   >
                     RE-ENABLE VIDEO
                   </Button>
@@ -327,7 +325,7 @@ export default function Chat() {
                     triggerHaptic('medium');
                     nextPartner();
                   }}
-                  className={`flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base ${isLite ? '' : 'shadow-lg shadow-primary/20'}`}
+                  className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                   title="Shortcut: Enter"
                 >
                   {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
