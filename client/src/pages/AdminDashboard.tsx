@@ -302,28 +302,47 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="history" className="mt-6">
-            <div className="grid gap-4">
-              {mHistory?.map((h) => (
-                <Card key={h.id}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <Power className={`w-4 h-4 ${h.mode === 'on' ? 'text-destructive' : 'text-primary'}`} />
-                      Maintenance: {h.mode.toUpperCase()}
-                    </CardTitle>
-                    <div className="text-xs text-muted-foreground">
-                      {format(new Date(h.createdAt), "MMM d, h:mm a")}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground italic">"{h.message}"</p>
-                  </CardContent>
-                </Card>
-              ))}
-              {(!mHistory || mHistory.length === 0) && (
-                <Card><CardContent className="py-8 text-center text-muted-foreground">No history records found.</CardContent></Card>
-              )}
-            </div>
+          <TabsContent value="maintenance" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>System Maintenance</CardTitle>
+                <CardDescription>
+                  Enable maintenance mode to prevent new chats.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between space-x-2 border p-4 rounded-xl">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Maintenance Mode</Label>
+                    <p className="text-sm text-muted-foreground">
+                      When active, users will see a maintenance screen.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={maintenanceMode}
+                    onCheckedChange={setMaintenanceMode}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Maintenance Message</Label>
+                  <Textarea
+                    placeholder="Site is under maintenance..."
+                    value={maintenanceMessage}
+                    onChange={(e) => setMaintenanceMessage(e.target.value)}
+                    rows={4}
+                    className="rounded-xl"
+                  />
+                </div>
+                <Button 
+                  onClick={() => updateMaintenanceMutation.mutate()}
+                  disabled={updateMaintenanceMutation.isPending}
+                  className="w-full h-12 font-bold"
+                  variant={maintenanceMode ? "destructive" : "default"}
+                >
+                  {updateMaintenanceMutation.isPending ? "UPDATING..." : "UPDATE MAINTENANCE STATUS"}
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
