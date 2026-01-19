@@ -4,7 +4,7 @@ import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Mic, MicOff, Camera, CameraOff, MessageCircle, Keyboard, Send, ChevronUp } from "lucide-react";
+import { Mic, MicOff, Camera, CameraOff, MessageCircle, Keyboard, Send, ChevronUp, Camera as CameraIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -93,23 +93,42 @@ export default function Chat() {
 
   const takeSnapshot = async () => {
     const remoteVideo = document.querySelector('video[data-remote="true"]') as HTMLVideoElement;
-    if (!remoteVideo || chatState !== 'connected') return;
+    const localVideo = document.querySelector('video:not([data-remote="true"])') as HTMLVideoElement;
+    if (!remoteVideo || !localVideo || chatState !== 'connected') return;
 
     try {
       const canvas = document.createElement('canvas');
-      canvas.width = remoteVideo.videoWidth;
-      canvas.height = remoteVideo.videoHeight;
+      // Set canvas size to accommodate both videos side-by-side or stacked
+      // Let's do side-by-side for better visibility
+      canvas.width = remoteVideo.videoWidth + localVideo.videoWidth;
+      canvas.height = Math.max(remoteVideo.videoHeight, localVideo.videoHeight);
+      
       const ctx = canvas.getContext('2d');
       if (ctx) {
+        // Fill background
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw remote video on the left
         ctx.drawImage(remoteVideo, 0, 0);
+        
+        // Draw local video on the right
+        ctx.drawImage(localVideo, remoteVideo.videoWidth, 0);
+
+        // Add watermark
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.font = '20px Arial';
+        ctx.fillText('OmeClone Snapshot', 20, canvas.height - 20);
+
         const link = document.createElement('a');
-        link.download = `omeclone-snapshot-${Date.now()}.png`;
-        link.href = canvas.toDataURL();
+        link.download = `omeclone-memory-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
         link.click();
-        toast({ title: "Snapshot Saved", description: "Memory captured successfully!" });
+        toast({ title: "Snapshot Saved", description: "Dual-view memory captured!" });
       }
     } catch (err) {
-      toast({ title: "Snapshot Failed", description: "Could not capture video.", variant: "destructive" });
+      console.error('Snapshot error:', err);
+      toast({ title: "Snapshot Failed", description: "Could not capture memory.", variant: "destructive" });
     }
   };
 
@@ -157,6 +176,22 @@ export default function Chat() {
         
         <div className="flex items-center gap-4">
           <ThemeToggle />
+          <TooltipProvider>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="w-8 h-8 rounded-full hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                  onClick={takeSnapshot}
+                  disabled={chatState !== 'connected'}
+                >
+                  <CameraIcon className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Capture Memory</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
