@@ -76,7 +76,7 @@ export function ChatBox({
         ) : (
           <>
             <div className="text-primary-foreground mb-6 text-center py-2 px-4 bg-primary rounded-lg text-xs md:text-sm font-bold border border-primary-border shadow-lg animate-in zoom-in-95 duration-500">
-              You're connected to a stranger. Say hello!
+              Connect with new people — keep it decent, safe, and friendly.
             </div>
             {messages.map((msg) => (
               <div
