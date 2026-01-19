@@ -169,42 +169,37 @@ export default function Chat() {
         {/* Left Section: Stacked Videos (Layout only from image) */}
         <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0">
           {/* Stranger Video */}
-          <div className="relative rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm">
-            <VideoDisplay 
-              stream={remoteStream} 
-              isVideoEnabled={partnerMediaStatus.video}
-              className="w-full h-full object-cover"
-              data-remote="true"
-              placeholder={
-                chatState === 'idle' ? (
-                   <div className="flex flex-col items-center gap-2 opacity-50">
-                    <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
+          <VideoDisplay 
+            stream={remoteStream} 
+            isVideoEnabled={partnerMediaStatus.video}
+            className="rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm"
+            data-remote="true"
+            placeholder={
+              chatState === 'idle' ? (
+                 <div className="flex flex-col items-center gap-2 opacity-50">
+                  <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
+                </div>
+              ) : (
+                <div className="loader-wrapper scale-75">
+                  <div className="typing-dots">
+                    <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
+                    <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
+                    <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
                   </div>
-                ) : (
-                  <div className="loader-wrapper scale-75">
-                    <div className="typing-dots">
-                      <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
-                    </div>
-                  </div>
-                )
-              }
-            />
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
-              Stranger
-            </div>
-          </div>
+                </div>
+              )
+            }
+          />
 
           {/* Your Video */}
-          <div className="relative rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm">
+          <div className="relative w-full aspect-[4/3]">
             <VideoDisplay 
               stream={localStream} 
               isLocal 
               isVideoEnabled={isVideoEnabled}
-              className="w-full h-full object-cover" 
+              className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
             />
-            <div className="absolute top-2 right-2 flex flex-col gap-2">
+            <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
                <Button
                   size="icon"
                   variant={isAudioEnabled ? "secondary" : "destructive"}
@@ -221,9 +216,6 @@ export default function Chat() {
                 >
                   {isVideoEnabled ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
                 </Button>
-            </div>
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
-              You
             </div>
           </div>
         </div>

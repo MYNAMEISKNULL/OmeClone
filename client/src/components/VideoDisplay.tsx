@@ -31,7 +31,7 @@ export function VideoDisplay({
   return (
     <div 
       className={cn(
-        "relative overflow-hidden bg-muted/30 rounded-2xl border border-border shadow-sm group",
+        "relative overflow-hidden group",
         className
       )}
       {...props}
@@ -55,8 +55,8 @@ export function VideoDisplay({
       )}
       
       {/* Label */}
-      <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-background/80 backdrop-blur-md text-xs font-medium text-foreground border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {isLocal ? "You" : "Partner"}
+      <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {isLocal ? "You" : "Stranger"}
       </div>
     </div>
   );
