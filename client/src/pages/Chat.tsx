@@ -231,31 +231,34 @@ export default function Chat() {
                     onClick={handleStartChat}
                     size="sm"
                     className={cn(
-                      "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      "h-14 w-full font-bold rounded-lg flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95",
                       isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
                     )}
                   >
                     <span className="text-xs uppercase tracking-wider">Start</span>
+                    <span className="text-[9px] opacity-70 font-medium">ENTER</span>
                   </Button>
                ) : chatState === 'waiting' ? (
                  <Button 
                     onClick={handleStopChat}
                     variant="destructive"
                     size="sm"
-                    className="h-10 w-full font-bold uppercase rounded-lg shadow-lg active:scale-95"
+                    className="h-14 w-full font-bold flex flex-col items-center justify-center gap-0.5 uppercase rounded-lg shadow-lg active:scale-95"
                   >
                     <span className="text-xs tracking-wider">Stop</span>
+                    <span className="text-[9px] opacity-70 font-medium">ESC</span>
                   </Button>
                ) : (
                  <Button 
                     onClick={handleNextPartner}
                     size="sm"
                     className={cn(
-                      "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      "h-14 w-full font-bold rounded-lg flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95",
                       isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
                     )}
                   >
                     <span className="text-xs uppercase tracking-wider">Next</span>
+                    <span className="text-[9px] opacity-70 font-medium">ENTER</span>
                   </Button>
                )}
              </div>
@@ -295,29 +298,32 @@ export default function Chat() {
                  <Button 
                     onClick={handleStartChat}
                     className={cn(
-                      "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      "h-14 w-full font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95",
                       isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
                     )}
                   >
                     <span className="text-sm uppercase tracking-wider">Start</span>
+                    <span className="text-[10px] opacity-70 font-medium">ENTER</span>
                   </Button>
                ) : chatState === 'waiting' ? (
                  <Button 
                     onClick={handleStopChat}
                     variant="destructive"
-                    className="h-10 w-full font-bold uppercase rounded-xl shadow-lg shadow-destructive/20 active:scale-95"
+                    className="h-14 w-full font-bold flex flex-col items-center justify-center gap-0.5 uppercase rounded-xl shadow-lg shadow-destructive/20 active:scale-95"
                   >
                     <span className="text-sm tracking-wider">Stop</span>
+                    <span className="text-[10px] opacity-70 font-medium">ESC</span>
                   </Button>
                ) : (
                  <Button 
                     onClick={handleNextPartner}
                     className={cn(
-                      "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      "h-14 w-full font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95",
                       isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
                     )}
                   >
                     <span className="text-sm uppercase tracking-wider">Next</span>
+                    <span className="text-[10px] opacity-70 font-medium">ENTER</span>
                   </Button>
                )}
              </div>
