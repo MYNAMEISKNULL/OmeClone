@@ -9,6 +9,7 @@ interface VideoDisplayProps {
   muted?: boolean;
   placeholder?: React.ReactNode;
   isVideoEnabled?: boolean;
+  onBlackFrameChange?: (isBlack: boolean) => void;
 }
 
 export function VideoDisplay({ 
@@ -18,11 +19,17 @@ export function VideoDisplay({
   muted = false,
   placeholder = "Waiting for partner...",
   isVideoEnabled = true,
+  onBlackFrameChange,
   ...props
 }: VideoDisplayProps & React.HTMLAttributes<HTMLDivElement>) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isBlackFrame, setIsBlackFrame] = useState(false);
+
+  useEffect(() => {
+    if (onBlackFrameChange) {
+      onBlackFrameChange(isBlackFrame);
+    }
+  }, [isBlackFrame, onBlackFrameChange]);
 
   useEffect(() => {
     if (videoRef.current && stream && isVideoEnabled) {

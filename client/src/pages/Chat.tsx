@@ -37,8 +37,8 @@ export default function Chat() {
   } = useWebRTC();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
   const [isTextOnly, setIsTextOnly] = useState(false);
+  const [isLocalVideoBlack, setIsLocalVideoBlack] = useState(false);
 
   useEffect(() => {
     if (chatState === 'connected') {
@@ -46,6 +46,31 @@ export default function Chat() {
       triggerHaptic('heavy');
     }
   }, [chatState]);
+
+  const handleStartChat = () => {
+    if (isLocalVideoBlack) {
+      toast({
+        title: "Camera is Black",
+        description: "Please show yourself before starting a chat!",
+        variant: "destructive"
+      });
+      return;
+    }
+    startChat();
+  };
+
+  const handleNextPartner = () => {
+    if (isLocalVideoBlack) {
+      toast({
+        title: "Camera is Black",
+        description: "Please show yourself before finding a new partner!",
+        variant: "destructive"
+      });
+      stopChat();
+      return;
+    }
+    nextPartner();
+  };
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -187,6 +212,7 @@ export default function Chat() {
               stream={localStream} 
               isLocal 
               isVideoEnabled={isVideoEnabled}
+              onBlackFrameChange={setIsLocalVideoBlack}
               className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
             />
           </div>
@@ -209,10 +235,10 @@ export default function Chat() {
           <div className="h-20 px-3 bg-card border-t border-border flex items-center gap-3 shrink-0">
              <Button 
                 onClick={() => {
-                  if (chatState === 'idle') startChat();
-                  else nextPartner();
+                  if (chatState === 'idle') handleStartChat();
+                  else handleNextPartner();
                 }}
-                className="h-14 min-w-[120px] bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-primary/20 transition-all active:scale-95"
+                className={`h-14 min-w-[120px] font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95 ${isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'}`}
               >
                 <span className="text-lg uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
                 <span className="text-[10px] font-normal opacity-50">Esc</span>
