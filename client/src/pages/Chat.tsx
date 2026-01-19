@@ -41,6 +41,7 @@ export default function Chat() {
   const [isTextOnly, setIsTextOnly] = useState(false);
   const [isLocalVideoBlack, setIsLocalVideoBlack] = useState(false);
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
+  const [isChatOpenOnMobile, setIsChatOpenOnMobile] = useState(false); // Add this back for toggle logic if needed elsewhere, but mainly to fix LSP errors if it's being used in a template string or similar
 
   useEffect(() => {
     if (chatState === 'connected') {
@@ -122,12 +123,12 @@ export default function Chat() {
 
       switch (e.key.toLowerCase()) {
         case 'escape':
-          if (chatState !== 'idle') stopChat();
+          if (chatState !== 'idle') handleStopChat();
           break;
         case 'enter':
           if (chatState === 'idle') {
             handleStartChat();
-          } else {
+          } else if (chatState === 'connected') {
             handleNextPartner();
           }
           break;
@@ -225,29 +226,38 @@ export default function Chat() {
           {/* Mobile Bottom Bar (Always visible) */}
           <div className="md:hidden mt-auto h-20 px-3 bg-card border border-border rounded-xl flex items-center gap-3 shrink-0">
              <div className="flex flex-col gap-1 min-w-[100px]">
-               <Button 
-                  onClick={() => {
-                    if (chatState === 'idle') handleStartChat();
-                    else handleNextPartner();
-                  }}
-                  size="sm"
-                  className={cn(
-                    "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
-                    isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                  )}
-                >
-                  <span className="text-xs uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
-                </Button>
-                {chatState !== 'idle' && (
-                  <Button 
+               {chatState === 'idle' ? (
+                 <Button 
+                    onClick={handleStartChat}
+                    size="sm"
+                    className={cn(
+                      "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                    )}
+                  >
+                    <span className="text-xs uppercase tracking-wider">Start</span>
+                  </Button>
+               ) : chatState === 'waiting' ? (
+                 <Button 
+                    onClick={handleStopChat}
                     variant="destructive"
                     size="sm"
-                    onClick={handleStopChat}
-                    className="h-6 w-full text-[9px] font-bold uppercase rounded-md"
+                    className="h-10 w-full font-bold uppercase rounded-lg shadow-lg active:scale-95"
                   >
-                    Stop
+                    <span className="text-xs tracking-wider">Stop</span>
                   </Button>
-                )}
+               ) : (
+                 <Button 
+                    onClick={handleNextPartner}
+                    size="sm"
+                    className={cn(
+                      "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                    )}
+                  >
+                    <span className="text-xs uppercase tracking-wider">Next</span>
+                  </Button>
+               )}
              </div>
              <Button
                 variant="secondary"
@@ -281,28 +291,35 @@ export default function Chat() {
           
           <div className="h-20 px-3 bg-card border-t border-border flex items-center gap-3 shrink-0">
              <div className="flex flex-col gap-1 min-w-[120px]">
-               <Button 
-                  onClick={() => {
-                    if (chatState === 'idle') handleStartChat();
-                    else handleNextPartner();
-                  }}
-                  className={cn(
-                    "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
-                    isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
-                  )}
-                >
-                  <span className="text-sm uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
-                </Button>
-                {chatState !== 'idle' && (
-                  <Button 
-                    variant="destructive"
-                    size="sm"
-                    onClick={handleStopChat}
-                    className="h-6 w-full text-[10px] font-bold uppercase rounded-lg"
+               {chatState === 'idle' ? (
+                 <Button 
+                    onClick={handleStartChat}
+                    className={cn(
+                      "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
+                    )}
                   >
-                    Stop
+                    <span className="text-sm uppercase tracking-wider">Start</span>
                   </Button>
-                )}
+               ) : chatState === 'waiting' ? (
+                 <Button 
+                    onClick={handleStopChat}
+                    variant="destructive"
+                    className="h-10 w-full font-bold uppercase rounded-xl shadow-lg shadow-destructive/20 active:scale-95"
+                  >
+                    <span className="text-sm tracking-wider">Stop</span>
+                  </Button>
+               ) : (
+                 <Button 
+                    onClick={handleNextPartner}
+                    className={cn(
+                      "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                      isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
+                    )}
+                  >
+                    <span className="text-sm uppercase tracking-wider">Next</span>
+                  </Button>
+               )}
              </div>
               
               <div className="flex-1 relative flex items-center gap-2">
