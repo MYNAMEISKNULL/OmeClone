@@ -4,12 +4,12 @@ import { useWebRTC } from "@/hooks/use-web-rtc";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { ChatBox } from "@/components/ChatBox";
 import { ReportDialog } from "@/components/ReportDialog";
-import { Mic, MicOff, Camera, CameraOff, MessageCircle, Keyboard, Send } from "lucide-react";
+import { Mic, MicOff, Camera, CameraOff, MessageCircle, Keyboard, Send, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useFeedback } from "@/hooks/use-feedback";
 import { cn } from "@/lib/utils";
 import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
@@ -40,21 +40,19 @@ export default function Chat() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isTextOnly, setIsTextOnly] = useState(false);
   const [isLocalVideoBlack, setIsLocalVideoBlack] = useState(false);
-  const [isChatOpenOnMobile, setIsChatOpenOnMobile] = useState(false);
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
 
   useEffect(() => {
     if (chatState === 'connected') {
       playSound('success');
       triggerHaptic('heavy');
-      // On mobile, show chat automatically when connected if there's no activity
       if (window.innerWidth < 768) {
-        setIsChatOpenOnMobile(true);
+        setIsMobileChatOpen(true);
       }
     }
   }, [chatState]);
 
   const handleStartChat = () => {
-    console.log("[Chat] Attempting to start chat. isLocalVideoBlack:", isLocalVideoBlack);
     if (isLocalVideoBlack) {
       toast({
         title: "Camera is Black",
@@ -67,7 +65,6 @@ export default function Chat() {
   };
 
   const handleNextPartner = () => {
-    console.log("[Chat] Attempting to find next partner. isLocalVideoBlack:", isLocalVideoBlack);
     if (isLocalVideoBlack) {
       toast({
         title: "Camera is Black",
@@ -82,11 +79,6 @@ export default function Chat() {
 
   const handleStopChat = () => {
     stopChat();
-  };
-
-  const handleToggleMobileChat = () => {
-    setIsChatOpenOnMobile(!isChatOpenOnMobile);
-    triggerHaptic('light');
   };
 
   useEffect(() => {
@@ -134,23 +126,17 @@ export default function Chat() {
           break;
         case 'enter':
           if (chatState === 'idle') {
-            startChat();
+            handleStartChat();
           } else {
-            nextPartner();
+            handleNextPartner();
           }
-          break;
-        case 'm':
-          toggleAudio();
-          break;
-        case 'v':
-          toggleVideo();
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [chatState, startChat, nextPartner, stopChat, toggleAudio, toggleVideo]);
+  }, [chatState, isLocalVideoBlack]);
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
@@ -196,53 +182,92 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Main Content Area with Requested Layout */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden p-2 gap-2 relative">
-        {/* Left Section: Stacked Videos (Layout only from image) */}
-        <div className={cn(
-          "w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0 transition-transform duration-300 md:translate-x-0",
-          isChatOpenOnMobile && "max-md:-translate-x-full"
-        )}>
-          {/* Stranger Video */}
-          <VideoDisplay 
-            stream={remoteStream} 
-            isVideoEnabled={partnerMediaStatus.video}
-            className="rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm"
-            data-remote="true"
-            placeholder={
-              chatState === 'idle' ? (
-                 <div className="flex flex-col items-center gap-2 opacity-50">
-                  <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
-                </div>
-              ) : (
-                <div className="loader-wrapper scale-75">
-                  <div className="typing-dots">
-                    <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
-                    <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
-                    <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
-                  </div>
-                </div>
-              )
-            }
-          />
-
-          {/* Your Video */}
-          <div className="relative w-full aspect-[4/3]">
+        {/* Left Section: Stacked Videos */}
+        <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0 h-full overflow-hidden">
+          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+            {/* Stranger Video */}
             <VideoDisplay 
-              stream={localStream} 
-              isLocal 
-              isVideoEnabled={isVideoEnabled}
-              onBlackFrameChange={setIsLocalVideoBlack}
-              className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
+              stream={remoteStream} 
+              isVideoEnabled={partnerMediaStatus.video}
+              className="rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm"
+              data-remote="true"
+              placeholder={
+                chatState === 'idle' ? (
+                   <div className="flex flex-col items-center gap-2 opacity-50">
+                    <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
+                  </div>
+                ) : (
+                  <div className="loader-wrapper scale-75">
+                    <div className="typing-dots">
+                      <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
+                      <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
+                      <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
+                    </div>
+                  </div>
+                )
+              }
             />
+
+            {/* Your Video */}
+            <div className="relative w-full aspect-[4/3]">
+              <VideoDisplay 
+                stream={localStream} 
+                isLocal 
+                isVideoEnabled={isVideoEnabled}
+                onBlackFrameChange={setIsLocalVideoBlack}
+                className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
+              />
+            </div>
+          </div>
+          
+          {/* Mobile Bottom Bar (Always visible) */}
+          <div className="md:hidden mt-auto h-20 px-3 bg-card border border-border rounded-xl flex items-center gap-3 shrink-0">
+             <div className="flex flex-col gap-1 min-w-[100px]">
+               <Button 
+                  onClick={() => {
+                    if (chatState === 'idle') handleStartChat();
+                    else handleNextPartner();
+                  }}
+                  size="sm"
+                  className={cn(
+                    "h-10 w-full font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                    isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                  )}
+                >
+                  <span className="text-xs uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
+                </Button>
+                {chatState !== 'idle' && (
+                  <Button 
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleStopChat}
+                    className="h-6 w-full text-[9px] font-bold uppercase rounded-md"
+                  >
+                    Stop
+                  </Button>
+                )}
+             </div>
+             <Button
+                variant="secondary"
+                className="flex-1 h-12 rounded-xl border border-border flex items-center justify-center gap-2"
+                onClick={() => setIsMobileChatOpen(true)}
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span>Chat</span>
+                {messages.length > 0 && (
+                  <span className="bg-primary text-primary-foreground text-[10px] rounded-full w-5 h-5 flex items-center justify-center">
+                    {messages.length}
+                  </span>
+                )}
+                <ChevronUp className="w-4 h-4 ml-auto opacity-50" />
+              </Button>
           </div>
         </div>
 
-        {/* Right Section: Large Chat Area */}
-        <div className={cn(
-          "flex-1 flex flex-col bg-card border border-border rounded-lg min-w-0 shadow-sm overflow-hidden transition-transform duration-300 absolute md:relative inset-2 md:inset-0",
-          !isChatOpenOnMobile && "max-md:translate-x-full"
-        )}>
+        {/* Desktop Chat Area */}
+        <div className="hidden md:flex flex-1 flex-col bg-card border border-border rounded-lg min-w-0 shadow-sm overflow-hidden">
           <div className="flex-1 overflow-hidden">
              <ChatBox 
                 messages={messages} 
@@ -254,7 +279,6 @@ export default function Chat() {
               />
           </div>
           
-          {/* Bottom Control Bar */}
           <div className="h-20 px-3 bg-card border-t border-border flex items-center gap-3 shrink-0">
              <div className="flex flex-col gap-1 min-w-[120px]">
                <Button 
@@ -310,15 +334,58 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Mobile Chat Toggle Button */}
-        <Button
-          size="icon"
-          variant="secondary"
-          onClick={handleToggleMobileChat}
-          className="fixed bottom-24 right-6 w-12 h-12 rounded-full shadow-2xl z-50 md:hidden border border-border"
-        >
-          <MessageCircle className={cn("w-6 h-6 transition-transform", isChatOpenOnMobile && "rotate-90")} />
-        </Button>
+        {/* Mobile Sliding Chat Overlay (Drawer) */}
+        <Drawer open={isMobileChatOpen} onOpenChange={setIsMobileChatOpen}>
+          <DrawerContent className="h-[85vh] p-0 flex flex-col bg-background outline-none border-t border-border">
+            <DrawerHeader className="shrink-0 border-b border-border bg-card/50 backdrop-blur-md px-4 py-3 flex items-center justify-between">
+              <DrawerTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                <MessageCircle className="w-4 h-4 text-primary" />
+                Chatting with Stranger
+              </DrawerTitle>
+              <Button variant="ghost" size="sm" onClick={() => setIsMobileChatOpen(false)} className="text-xs h-8 px-2">
+                Minimize
+              </Button>
+            </DrawerHeader>
+            <div className="flex-1 overflow-hidden">
+               <ChatBox 
+                  messages={messages} 
+                  onSendMessage={sendMessage} 
+                  onTyping={sendTyping}
+                  isPartnerTyping={isTyping}
+                  disabled={chatState !== 'connected'} 
+                  className="h-full border-none bg-transparent"
+                />
+            </div>
+            <div className="h-24 px-4 bg-card border-t border-border flex items-center gap-3 shrink-0 pb-8">
+              <div className="flex-1 relative flex items-center gap-2">
+                <input 
+                   disabled={chatState !== 'connected'}
+                   placeholder="Type a message..."
+                   className="flex-1 h-12 bg-background border border-border rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                   onKeyDown={(e) => {
+                     if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                       sendMessage(e.currentTarget.value);
+                       e.currentTarget.value = "";
+                     }
+                   }}
+                />
+                <button 
+                  disabled={chatState !== 'connected'}
+                  onClick={() => {
+                    const input = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
+                    if (input && input.value.trim()) {
+                      sendMessage(input.value);
+                      input.value = "";
+                    }
+                  }}
+                  className="absolute right-3 text-primary p-2"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       <ReportDialog open={isReportOpen} onOpenChange={setIsReportOpen} />
