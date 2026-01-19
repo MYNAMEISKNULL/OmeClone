@@ -173,171 +173,174 @@ export default function Chat() {
       </div>
 
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden">
-        {/* Extended Chat Section (Left Side) */}
-        <div className="flex-1 h-full flex flex-col bg-card min-w-0">
-          <ChatBox 
-            messages={messages} 
-            onSendMessage={sendMessage} 
-            onTyping={sendTyping}
-            isPartnerTyping={isTyping}
-            disabled={chatState !== 'connected'} 
-            className="flex-1 border-none bg-transparent min-h-0"
-          />
-          
-          {/* Bottom Control Bar */}
-          <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4 shrink-0">
-            {chatState === 'idle' ? (
-              <Button 
-                data-testid="button-start"
-                onClick={() => {
-                  playSound('pop');
-                  triggerHaptic('medium');
-                  startChat();
-                }}
-                className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
-                title="Shortcut: Enter"
-              >
-                START <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  data-testid="button-stop"
-                  variant="destructive"
-                  onClick={() => {
-                    playSound('click');
-                    triggerHaptic('light');
-                    stopChat();
-                  }}
-                  className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
-                  title="Shortcut: Esc"
+        {/* Left Side: Video Column & Chat Area */}
+        <div className="flex flex-col md:flex-row flex-1 min-w-0">
+          {/* Video Column (Leftmost) */}
+          <div className="w-full md:w-[320px] lg:w-[400px] flex flex-col gap-2 p-2 border-r border-border bg-background shrink-0 overflow-y-auto">
+            {/* Remote Video */}
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 aspect-video md:aspect-square shrink-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+              <VideoDisplay 
+                stream={remoteStream} 
+                isVideoEnabled={partnerMediaStatus.video}
+                className="w-full h-full object-cover"
+                data-remote="true"
+                placeholder={
+                  chatState === 'idle' ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
+                    </div>
+                  ) : (
+                    <div className="loader-wrapper scale-75">
+                      <div className="typing-dots">
+                        <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
+                        <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
+                        <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
+                      </div>
+                    </div>
+                  )
+                }
+              />
+              <div className="absolute top-2 right-2 flex gap-1.5">
+                {chatState === 'connected' && (
+                  <div className="px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[8px] font-bold border border-border flex items-center gap-1">
+                    HQ
+                  </div>
+                )}
+                {!partnerMediaStatus.audio && (
+                  <div className="p-1.5 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
+                    <MicOff className="w-3 h-3" />
+                  </div>
+                )}
+                {!partnerMediaStatus.video && (
+                  <div className="p-1.5 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
+                    <CameraOff className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+              <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
+                Stranger
+              </div>
+            </div>
+
+            {/* Local Video */}
+            <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 aspect-video md:aspect-square shrink-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+              <VideoDisplay 
+                stream={localStream} 
+                isLocal 
+                isVideoEnabled={isVideoEnabled}
+                className="w-full h-full object-cover" 
+              />
+              <div className="absolute top-2 right-2 flex gap-1.5">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={takeSnapshot}
+                  className="rounded-full w-8 h-8 bg-accent/10 text-accent hover:bg-accent/20 border border-accent/20"
+                  title="Take Snapshot"
                 >
-                  STOP <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ESC)</span>
+                  <Camera className="w-4 h-4" />
                 </Button>
+                <Button
+                  size="icon"
+                  variant={isAudioEnabled ? "secondary" : "destructive"}
+                  onClick={toggleAudio}
+                  className="rounded-full w-8 h-8"
+                >
+                  {isAudioEnabled ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+                </Button>
+                <Button
+                  size="icon"
+                  variant={isVideoEnabled ? "secondary" : "destructive"}
+                  onClick={toggleVideo}
+                  className="rounded-full w-8 h-8"
+                >
+                  {isVideoEnabled ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
+                </Button>
+              </div>
+              <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
+                You
+              </div>
+            </div>
+            
+            {isTextOnly && (
+              <div className="flex-1 flex items-center justify-center p-4">
+                <div className="text-center space-y-2">
+                  <MessageCircle className="w-8 h-8 text-primary mx-auto opacity-50" />
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Video Disabled</p>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setIsTextOnly(false)}
+                    className="text-[10px] font-bold text-primary p-0 h-auto hover:bg-transparent"
+                  >
+                    RE-ENABLE
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Extended Chat Section (Adjacent to Videos) */}
+          <div className="flex-1 h-full flex flex-col bg-card min-w-0">
+            <ChatBox 
+              messages={messages} 
+              onSendMessage={sendMessage} 
+              onTyping={sendTyping}
+              isPartnerTyping={isTyping}
+              disabled={chatState !== 'connected'} 
+              className="flex-1 border-none bg-transparent min-h-0"
+            />
+            
+            {/* Bottom Control Bar */}
+            <div className="h-20 px-4 bg-card border-t border-border flex items-center gap-4 shrink-0">
+              {chatState === 'idle' ? (
                 <Button 
-                  data-testid="button-next"
+                  data-testid="button-start"
                   onClick={() => {
                     playSound('pop');
                     triggerHaptic('medium');
-                    nextPartner();
+                    startChat();
                   }}
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
                   title="Shortcut: Enter"
                 >
-                  {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
-                  <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
+                  START <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
                 </Button>
-              </>
-            )}
+              ) : (
+                <>
+                  <Button 
+                    data-testid="button-stop"
+                    variant="destructive"
+                    onClick={() => {
+                      playSound('click');
+                      triggerHaptic('light');
+                      stopChat();
+                    }}
+                    className="h-12 px-6 md:px-8 font-bold rounded-lg uppercase tracking-wider text-xs md:text-sm"
+                    title="Shortcut: Esc"
+                  >
+                    STOP <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ESC)</span>
+                  </Button>
+                  <Button 
+                    data-testid="button-next"
+                    onClick={() => {
+                      playSound('pop');
+                      triggerHaptic('medium');
+                      nextPartner();
+                    }}
+                    className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg uppercase tracking-wider text-sm md:text-base shadow-lg shadow-primary/20"
+                    title="Shortcut: Enter"
+                  >
+                    {chatState === 'waiting' ? 'FINDING STRANGER...' : 'NEW STRANGER'}
+                    <span className="hidden lg:inline ml-2 opacity-50 text-[10px]">(ENTER)</span>
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Video Column (Right Side) */}
-        <div className="w-full md:w-[400px] flex flex-col gap-2 p-2 border-l border-border bg-background shrink-0 overflow-y-auto">
-          {/* Remote Video */}
-          <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 aspect-video md:aspect-square shrink-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-            <VideoDisplay 
-              stream={remoteStream} 
-              isVideoEnabled={partnerMediaStatus.video}
-              className="w-full h-full object-cover"
-              data-remote="true"
-              placeholder={
-                chatState === 'idle' ? (
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
-                  </div>
-                ) : (
-                  <div className="loader-wrapper scale-75">
-                    <div className="typing-dots">
-                      <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
-                    </div>
-                  </div>
-                )
-              }
-            />
-            <div className="absolute top-2 right-2 flex gap-1.5">
-              {chatState === 'connected' && (
-                <div className="px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[8px] font-bold border border-border flex items-center gap-1">
-                  HQ
-                </div>
-              )}
-              {!partnerMediaStatus.audio && (
-                <div className="p-1.5 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
-                  <MicOff className="w-3 h-3" />
-                </div>
-              )}
-              {!partnerMediaStatus.video && (
-                <div className="p-1.5 bg-destructive/10 backdrop-blur-md rounded-full text-destructive border border-destructive/20">
-                  <CameraOff className="w-3 h-3" />
-                </div>
-              )}
-            </div>
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
-              Stranger
-            </div>
-          </div>
-
-          {/* Local Video */}
-          <div className={`relative rounded-lg overflow-hidden bg-card border border-border flex items-center justify-center transition-all duration-500 aspect-video md:aspect-square shrink-0 ${isTextOnly ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-            <VideoDisplay 
-              stream={localStream} 
-              isLocal 
-              isVideoEnabled={isVideoEnabled}
-              className="w-full h-full object-cover" 
-            />
-            <div className="absolute top-2 right-2 flex gap-1.5">
-              <Button
-                size="icon"
-                variant="secondary"
-                onClick={takeSnapshot}
-                className="rounded-full w-8 h-8 bg-accent/10 text-accent hover:bg-accent/20 border border-accent/20"
-                title="Take Snapshot"
-              >
-                <Camera className="w-4 h-4" />
-              </Button>
-              <Button
-                size="icon"
-                variant={isAudioEnabled ? "secondary" : "destructive"}
-                onClick={toggleAudio}
-                className="rounded-full w-8 h-8"
-              >
-                {isAudioEnabled ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-              </Button>
-              <Button
-                size="icon"
-                variant={isVideoEnabled ? "secondary" : "destructive"}
-                onClick={toggleVideo}
-                className="rounded-full w-8 h-8"
-              >
-                {isVideoEnabled ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
-              </Button>
-            </div>
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
-              You
-            </div>
-          </div>
-          
-          {isTextOnly && (
-            <div className="flex-1 flex items-center justify-center p-4">
-              <div className="text-center space-y-2">
-                <MessageCircle className="w-8 h-8 text-primary mx-auto opacity-50" />
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Video Disabled</p>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setIsTextOnly(false)}
-                  className="text-[10px] font-bold text-primary p-0 h-auto hover:bg-transparent"
-                >
-                  RE-ENABLE
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Chat Drawer Trigger (for small screens) */}
+        {/* Mobile Chat Drawer Trigger */}
         <Drawer open={isChatDrawerOpen} onOpenChange={setIsChatDrawerOpen}>
           <DrawerTrigger asChild>
             <Button
