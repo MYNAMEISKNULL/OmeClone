@@ -344,9 +344,11 @@ export default function Chat() {
                    }}
                    onKeyDown={(e) => {
                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                       sendMessage(e.currentTarget.value);
+                       const val = e.currentTarget.value.trim();
                        e.currentTarget.value = "";
+                       sendMessage(val);
                        sendTyping(false);
+                       console.log("Message sent:", val);
                      }
                    }}
                 />
@@ -355,9 +357,11 @@ export default function Chat() {
                   onClick={() => {
                     const input = document.querySelector('input') as HTMLInputElement;
                     if (input && input.value.trim()) {
-                      sendMessage(input.value);
+                      const val = input.value.trim();
                       input.value = "";
+                      sendMessage(val);
                       sendTyping(false);
+                      console.log("Message sent via button:", val);
                     }
                   }}
                   className="absolute right-4 text-primary hover:text-primary/80 transition-colors disabled:opacity-30 p-2"
@@ -401,9 +405,11 @@ export default function Chat() {
                    }}
                    onKeyDown={(e) => {
                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                       sendMessage(e.currentTarget.value);
+                       const val = e.currentTarget.value.trim();
                        e.currentTarget.value = "";
+                       sendMessage(val);
                        sendTyping(false);
+                       console.log("Mobile Message sent:", val);
                      }
                    }}
                 />
@@ -412,9 +418,11 @@ export default function Chat() {
                   onClick={() => {
                     const input = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
                     if (input && input.value.trim()) {
-                      sendMessage(input.value);
+                      const val = input.value.trim();
                       input.value = "";
+                      sendMessage(val);
                       sendTyping(false);
+                      console.log("Mobile Message sent via button:", val);
                     }
                   }}
                   className="absolute right-3 text-primary p-2"

@@ -78,9 +78,9 @@ export function ChatBox({
             <div className="text-red-500 mb-6 text-center py-2 px-4 text-xs md:text-sm font-bold animate-in zoom-in-95 duration-500">
               Connect with new people — keep it decent, safe, and friendly.
             </div>
-            {messages.map((msg) => (
+            {messages.map((msg, idx) => (
               <div
-                key={msg.id}
+                key={`${msg.id}-${idx}`}
                 className={cn(
                   "flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300",
                   msg.isLocal ? "ml-auto items-end" : "items-start"
