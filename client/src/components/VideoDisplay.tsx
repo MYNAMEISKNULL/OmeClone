@@ -55,16 +55,19 @@ export function VideoDisplay({
         const pixels = imageData.data;
         
         let totalBrightness = 0;
-        for (let i = 0; i < pixels.length; i += 16) {
+        // Sample more pixels for accuracy
+        for (let i = 0; i < pixels.length; i += 4) {
           totalBrightness += (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
         }
         
-        const avgBrightness = totalBrightness / (pixels.length / 16);
-        setIsBlackFrame(avgBrightness < 15);
+        const avgBrightness = totalBrightness / (pixels.length / 4);
+        console.log(`[VideoDisplay] ${isLocal ? 'Local' : 'Remote'} avg brightness:`, avgBrightness);
+        // Slightly higher threshold (20) to be safer
+        setIsBlackFrame(avgBrightness < 20);
       }
     };
 
-    const interval = setInterval(checkFrame, 2000);
+    const interval = setInterval(checkFrame, 1000); // Check faster (every 1s)
     return () => clearInterval(interval);
   }, [stream, isVideoEnabled]);
 

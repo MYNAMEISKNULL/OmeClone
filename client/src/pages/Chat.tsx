@@ -48,6 +48,7 @@ export default function Chat() {
   }, [chatState]);
 
   const handleStartChat = () => {
+    console.log("[Chat] Attempting to start chat. isLocalVideoBlack:", isLocalVideoBlack);
     if (isLocalVideoBlack) {
       toast({
         title: "Camera is Black",
@@ -60,6 +61,7 @@ export default function Chat() {
   };
 
   const handleNextPartner = () => {
+    console.log("[Chat] Attempting to find next partner. isLocalVideoBlack:", isLocalVideoBlack);
     if (isLocalVideoBlack) {
       toast({
         title: "Camera is Black",
