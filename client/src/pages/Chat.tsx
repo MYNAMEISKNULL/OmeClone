@@ -124,16 +124,6 @@ export default function Chat() {
         </Link>
         
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsTextOnly(!isTextOnly)}
-            disabled={chatState !== 'idle'}
-            className={`h-8 rounded-full border-primary/20 text-[10px] font-bold uppercase tracking-wider transition-all ${isTextOnly ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'} ${chatState !== 'idle' ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            {isTextOnly ? 'Video: OFF' : 'Video: ON'}
-          </Button>
-
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
@@ -199,24 +189,6 @@ export default function Chat() {
               isVideoEnabled={isVideoEnabled}
               className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
             />
-            <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
-               <Button
-                  size="icon"
-                  variant={isAudioEnabled ? "secondary" : "destructive"}
-                  onClick={toggleAudio}
-                  className="rounded-full w-8 h-8 opacity-80 hover:opacity-100"
-                >
-                  {isAudioEnabled ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-                </Button>
-                <Button
-                  size="icon"
-                  variant={isVideoEnabled ? "secondary" : "destructive"}
-                  onClick={toggleVideo}
-                  className="rounded-full w-8 h-8 opacity-80 hover:opacity-100"
-                >
-                  {isVideoEnabled ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
-                </Button>
-            </div>
           </div>
         </div>
 
