@@ -325,10 +325,10 @@ export default function Chat() {
                 <MessageCircle className="w-8 h-8 text-primary mx-auto opacity-50" />
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Video Disabled</p>
                 <Button 
-                  variant="link" 
+                  variant="ghost" 
                   size="sm"
                   onClick={() => setIsTextOnly(false)}
-                  className="text-[10px] font-bold text-primary p-0 h-auto"
+                  className="text-[10px] font-bold text-primary p-0 h-auto hover:bg-transparent"
                 >
                   RE-ENABLE
                 </Button>
