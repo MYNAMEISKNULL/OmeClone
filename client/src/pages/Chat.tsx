@@ -186,45 +186,47 @@ export default function Chat() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden p-2 gap-2 relative">
         {/* Left Section: Stacked Videos */}
-        <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0 h-full overflow-hidden">
-          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+        <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col shrink-0 h-full overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
             {/* Stranger Video */}
-            <VideoDisplay 
-              stream={remoteStream} 
-              isVideoEnabled={partnerMediaStatus.video}
-              className="rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm"
-              data-remote="true"
-              placeholder={
-                chatState === 'idle' ? (
-                   <div className="flex flex-col items-center gap-2 opacity-50">
-                    <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
-                  </div>
-                ) : (
-                  <div className="loader-wrapper scale-75">
-                    <div className="typing-dots">
-                      <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
-                      <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
+            <div className="flex-1 min-h-0 relative">
+              <VideoDisplay 
+                stream={remoteStream} 
+                isVideoEnabled={partnerMediaStatus.video}
+                className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm object-cover"
+                data-remote="true"
+                placeholder={
+                  chatState === 'idle' ? (
+                    <div className="flex flex-col items-center gap-2 opacity-50">
+                      <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
                     </div>
-                  </div>
-                )
-              }
-            />
+                  ) : (
+                    <div className="loader-wrapper scale-75">
+                      <div className="typing-dots">
+                        <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
+                        <div className="dot animate-dot-2 bg-[#bc13fe] w-2 h-2 rounded-full" />
+                        <div className="dot animate-dot-3 bg-[#ff0055] w-2 h-2 rounded-full" />
+                      </div>
+                    </div>
+                  )
+                }
+              />
+            </div>
 
             {/* Your Video */}
-            <div className="relative w-full aspect-[4/3]">
+            <div className="flex-1 min-h-0 relative mt-2">
               <VideoDisplay 
                 stream={localStream} 
                 isLocal 
                 isVideoEnabled={isVideoEnabled}
                 onBlackFrameChange={setIsLocalVideoBlack}
-                className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm" 
+                className="w-full h-full rounded-lg overflow-hidden bg-card border border-border shadow-sm object-cover" 
               />
             </div>
           </div>
           
           {/* Mobile Bottom Bar (Always visible) */}
-          <div className="md:hidden mt-auto h-20 px-3 bg-card border border-border rounded-xl flex items-center gap-3 shrink-0">
+          <div className="md:hidden h-20 px-3 bg-card border border-border rounded-xl flex items-center gap-3 shrink-0 mt-2">
              <div className="flex flex-col gap-1 min-w-[100px]">
                {chatState === 'idle' ? (
                  <Button 
