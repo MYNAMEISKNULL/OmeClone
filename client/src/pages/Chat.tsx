@@ -339,10 +339,14 @@ export default function Chat() {
                    disabled={chatState !== 'connected'}
                    placeholder="Type a message..."
                    className="flex-1 h-14 bg-background border border-border rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                   onChange={(e) => {
+                     sendTyping(e.target.value.length > 0);
+                   }}
                    onKeyDown={(e) => {
                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                        sendMessage(e.currentTarget.value);
                        e.currentTarget.value = "";
+                       sendTyping(false);
                      }
                    }}
                 />
@@ -353,6 +357,7 @@ export default function Chat() {
                     if (input && input.value.trim()) {
                       sendMessage(input.value);
                       input.value = "";
+                      sendTyping(false);
                     }
                   }}
                   className="absolute right-4 text-primary hover:text-primary/80 transition-colors disabled:opacity-30 p-2"
@@ -391,10 +396,14 @@ export default function Chat() {
                    disabled={chatState !== 'connected'}
                    placeholder="Type a message..."
                    className="flex-1 h-12 bg-background border border-border rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                   onChange={(e) => {
+                     sendTyping(e.target.value.length > 0);
+                   }}
                    onKeyDown={(e) => {
                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                        sendMessage(e.currentTarget.value);
                        e.currentTarget.value = "";
+                       sendTyping(false);
                      }
                    }}
                 />
@@ -405,6 +414,7 @@ export default function Chat() {
                     if (input && input.value.trim()) {
                       sendMessage(input.value);
                       input.value = "";
+                      sendTyping(false);
                     }
                   }}
                   className="absolute right-3 text-primary p-2"
