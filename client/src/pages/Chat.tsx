@@ -11,8 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFeedback } from "@/hooks/use-feedback";
-import { cn } from "@/lib/utils";
-import logoUrl from "@assets/ChatGPT_Image_Jan_18,_2026,_08_40_11_AM_1768754432091.png";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Chat() {
   const [, setLocation] = useLocation();
@@ -155,6 +154,7 @@ export default function Chat() {
         </Link>
         
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
