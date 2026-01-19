@@ -39,11 +39,16 @@ export default function Chat() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isTextOnly, setIsTextOnly] = useState(false);
   const [isLocalVideoBlack, setIsLocalVideoBlack] = useState(false);
+  const [isChatOpenOnMobile, setIsChatOpenOnMobile] = useState(false);
 
   useEffect(() => {
     if (chatState === 'connected') {
       playSound('success');
       triggerHaptic('heavy');
+      // On mobile, show chat automatically when connected if there's no activity
+      if (window.innerWidth < 768) {
+        setIsChatOpenOnMobile(true);
+      }
     }
   }, [chatState]);
 
@@ -72,6 +77,15 @@ export default function Chat() {
       return;
     }
     nextPartner();
+  };
+
+  const handleStopChat = () => {
+    stopChat();
+  };
+
+  const handleToggleMobileChat = () => {
+    setIsChatOpenOnMobile(!isChatOpenOnMobile);
+    triggerHaptic('light');
   };
 
   useEffect(() => {
@@ -182,9 +196,12 @@ export default function Chat() {
       </div>
 
       {/* Main Content Area with Requested Layout */}
-      <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden p-2 gap-2">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden p-2 gap-2 relative">
         {/* Left Section: Stacked Videos (Layout only from image) */}
-        <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0">
+        <div className={cn(
+          "w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0 transition-transform duration-300 md:translate-x-0",
+          isChatOpenOnMobile && "max-md:-translate-x-full"
+        )}>
           {/* Stranger Video */}
           <VideoDisplay 
             stream={remoteStream} 
@@ -221,7 +238,10 @@ export default function Chat() {
         </div>
 
         {/* Right Section: Large Chat Area */}
-        <div className="flex-1 flex flex-col bg-card border border-border rounded-lg min-w-0 shadow-sm overflow-hidden">
+        <div className={cn(
+          "flex-1 flex flex-col bg-card border border-border rounded-lg min-w-0 shadow-sm overflow-hidden transition-transform duration-300 absolute md:relative inset-2 md:inset-0",
+          !isChatOpenOnMobile && "max-md:translate-x-full"
+        )}>
           <div className="flex-1 overflow-hidden">
              <ChatBox 
                 messages={messages} 
@@ -235,16 +255,30 @@ export default function Chat() {
           
           {/* Bottom Control Bar */}
           <div className="h-20 px-3 bg-card border-t border-border flex items-center gap-3 shrink-0">
-             <Button 
-                onClick={() => {
-                  if (chatState === 'idle') handleStartChat();
-                  else handleNextPartner();
-                }}
-                className={`h-14 min-w-[120px] font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg transition-all active:scale-95 ${isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'}`}
-              >
-                <span className="text-lg uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
-                <span className="text-[10px] font-normal opacity-50">Esc</span>
-              </Button>
+             <div className="flex flex-col gap-1 min-w-[120px]">
+               <Button 
+                  onClick={() => {
+                    if (chatState === 'idle') handleStartChat();
+                    else handleNextPartner();
+                  }}
+                  className={cn(
+                    "h-10 w-full font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95",
+                    isLocalVideoBlack ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
+                  )}
+                >
+                  <span className="text-sm uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
+                </Button>
+                {chatState !== 'idle' && (
+                  <Button 
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleStopChat}
+                    className="h-6 w-full text-[10px] font-bold uppercase rounded-lg"
+                  >
+                    Stop
+                  </Button>
+                )}
+             </div>
               
               <div className="flex-1 relative flex items-center gap-2">
                 <input 
@@ -274,6 +308,16 @@ export default function Chat() {
               </div>
           </div>
         </div>
+
+        {/* Mobile Chat Toggle Button */}
+        <Button
+          size="icon"
+          variant="secondary"
+          onClick={handleToggleMobileChat}
+          className="fixed bottom-24 right-6 w-12 h-12 rounded-full shadow-2xl z-50 md:hidden border border-border"
+        >
+          <MessageCircle className={cn("w-6 h-6 transition-transform", isChatOpenOnMobile && "rotate-90")} />
+        </Button>
       </div>
 
       <ReportDialog open={isReportOpen} onOpenChange={setIsReportOpen} />
