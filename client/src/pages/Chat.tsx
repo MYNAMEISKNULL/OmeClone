@@ -116,8 +116,12 @@ export default function Chat() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        if (e.key === 'Escape') (e.target as HTMLElement).blur();
+      // If user is typing in any input or textarea, ignore global shortcuts
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+      
+      if (isInputFocused) {
+        if (e.key === 'Escape') (activeElement as HTMLElement).blur();
         return;
       }
 
