@@ -137,7 +137,7 @@ export default function Chat() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [chatState, isLocalVideoBlack]);
+  }, [chatState, isLocalVideoBlack, handleStartChat, handleNextPartner, handleStopChat]);
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
