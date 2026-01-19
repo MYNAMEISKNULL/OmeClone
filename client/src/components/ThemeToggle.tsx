@@ -5,34 +5,24 @@ import { useTheme } from "@/components/theme-provider";
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   return (
-    <div className="flex items-center gap-1 p-1 bg-foreground/[0.03] rounded-full border border-border/50">
-      <Button
-        variant="ghost"
-        size="icon"
-        className={`rounded-full w-9 h-9 transition-all ${
-          theme === "light" 
-            ? "bg-background text-foreground shadow-sm" 
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-        onClick={() => setTheme("light")}
-      >
-        <Sun className="h-4 w-4" />
-        <span className="sr-only">Light</span>
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={`rounded-full w-9 h-9 transition-all ${
-          theme === "dark" 
-            ? "bg-background text-foreground shadow-sm" 
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-        onClick={() => setTheme("dark")}
-      >
-        <Moon className="h-4 w-4" />
-        <span className="sr-only">Dark</span>
-      </Button>
-    </div>
+    <Button
+      variant="ghost"
+      size="icon"
+      className="rounded-full w-9 h-9 text-muted-foreground hover:text-foreground transition-all hover-elevate active-elevate-2"
+      onClick={toggleTheme}
+      title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+    >
+      {theme === "light" ? (
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+      ) : (
+        <Moon className="h-[1.2rem] w-[1.2rem]" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 }
