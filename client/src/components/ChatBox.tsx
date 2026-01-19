@@ -114,29 +114,6 @@ export function ChatBox({
           </>
         )}
       </div>
-
-      <form onSubmit={handleSubmit} className="p-3 md:p-4 border-t border-border bg-card/50 backdrop-blur-sm shrink-0">
-        <div className="flex gap-2">
-          <Input
-            data-testid="input-chat"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="Type a message..."
-            disabled={disabled}
-            autoComplete="off"
-            className="rounded-xl bg-background border-border focus-visible:ring-primary/20 h-10 md:h-11"
-          />
-          <Button 
-            data-testid="button-send"
-            type="submit" 
-            size="icon" 
-            disabled={disabled || !inputValue.trim()}
-            className="rounded-xl shrink-0 transition-all active:scale-95 h-10 w-10 md:h-11 md:w-11"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
-      </form>
     </div>
   );
 }
