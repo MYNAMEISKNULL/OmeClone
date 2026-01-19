@@ -75,7 +75,7 @@ export function ChatBox({
           <ChatSkeleton />
         ) : (
           <>
-            <div className="text-primary-foreground mb-6 text-center py-2 px-4 bg-primary rounded-lg text-xs md:text-sm font-bold border border-primary-border shadow-lg animate-in zoom-in-95 duration-500">
+            <div className="text-red-500 mb-6 text-center py-2 px-4 text-xs md:text-sm font-bold animate-in zoom-in-95 duration-500">
               Connect with new people — keep it decent, safe, and friendly.
             </div>
             {messages.map((msg) => (
