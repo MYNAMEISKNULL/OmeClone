@@ -112,40 +112,75 @@ export default function Chat() {
 
   return (
     <div className="h-screen bg-background overflow-hidden flex flex-col font-sans">
-      {/* Header */}
-      <div className="h-14 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
+      {/* OmeClone Header */}
+      <div className="h-12 px-4 flex items-center justify-between bg-card border-b border-border z-50 shrink-0">
         <Link href="/">
-          <div className="flex items-center gap-3 cursor-pointer group">
-            <div className="w-9 h-9 overflow-hidden group-hover:scale-105 transition-transform bg-primary rounded-lg flex items-center justify-center shadow-md">
-              <img src={logoUrl} alt="Logo" className="w-7 h-7 object-contain brightness-0 invert" />
+          <div className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-7 h-7 overflow-hidden group-hover:scale-105 transition-transform">
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-bold text-foreground text-2xl tracking-tight">umingle</span>
+            <span className="font-bold text-foreground text-lg tracking-tight group-hover:text-primary transition-colors">Ome<span className="text-primary group-hover:text-foreground transition-colors">Clone</span></span>
           </div>
         </Link>
         
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3 text-sm font-bold text-primary">
-            <div className="w-12 h-6 bg-muted rounded-full relative flex items-center px-1">
-              <div className="w-4 h-4 bg-muted-foreground/30 rounded-full" />
-            </div>
-            <span>{onlineCount.toLocaleString()} + online</span>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsTextOnly(!isTextOnly)}
+            disabled={chatState !== 'idle'}
+            className={`h-8 rounded-full border-primary/20 text-[10px] font-bold uppercase tracking-wider transition-all ${isTextOnly ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'} ${chatState !== 'idle' ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isTextOnly ? 'Video: OFF' : 'Video: ON'}
+          </Button>
+
+          <TooltipProvider>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full hover:bg-accent/50">
+                  <Keyboard className="w-4 h-4 text-muted-foreground" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="w-64 p-4" align="end">
+                <div className="grid gap-3">
+                  <p className="text-xs font-semibold text-muted-foreground mb-1 text-left">Keyboard Shortcuts</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">New / Next Chat</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">ENTER</kbd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">Stop Chat</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono border border-border shadow-sm">ESC</kbd>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <div className="flex items-center gap-2 text-sm">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+            <span className="text-muted-foreground font-medium">{onlineCount.toLocaleString()}+ Online</span>
           </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content Area with Requested Layout */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-background overflow-hidden p-2 gap-2">
-        {/* Left Section: Stacked Videos */}
+        {/* Left Section: Stacked Videos (Layout only from image) */}
         <div className="w-full md:w-[35%] lg:w-[30%] flex flex-col gap-2 shrink-0">
-          {/* Remote Video */}
-          <div className="relative rounded-sm overflow-hidden bg-[#333] aspect-[4/3] w-full border border-border shadow-sm">
+          {/* Stranger Video */}
+          <div className="relative rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm">
             <VideoDisplay 
               stream={remoteStream} 
               isVideoEnabled={partnerMediaStatus.video}
               className="w-full h-full object-cover"
               data-remote="true"
               placeholder={
-                chatState === 'idle' ? null : (
+                chatState === 'idle' ? (
+                   <div className="flex flex-col items-center gap-2 opacity-50">
+                    <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Stranger</span>
+                  </div>
+                ) : (
                   <div className="loader-wrapper scale-75">
                     <div className="typing-dots">
                       <div className="dot animate-dot-1 bg-[#00f2ff] w-2 h-2 rounded-full" />
@@ -156,21 +191,20 @@ export default function Chat() {
                 )
               }
             />
-            <div className="absolute bottom-2 left-2 text-[10px] font-bold text-white/50 lowercase">umingle.com</div>
-            <div className="absolute bottom-2 right-2 text-primary opacity-80">
-               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
+              Stranger
             </div>
           </div>
 
-          {/* Local Video */}
-          <div className="relative rounded-sm overflow-hidden bg-[#333] aspect-[4/3] w-full border border-border shadow-sm">
+          {/* Your Video */}
+          <div className="relative rounded-lg overflow-hidden bg-card aspect-[4/3] w-full border border-border shadow-sm">
             <VideoDisplay 
               stream={localStream} 
               isLocal 
               isVideoEnabled={isVideoEnabled}
               className="w-full h-full object-cover" 
             />
-            <div className="absolute top-3 right-3 flex flex-col gap-2">
+            <div className="absolute top-2 right-2 flex flex-col gap-2">
                <Button
                   size="icon"
                   variant={isAudioEnabled ? "secondary" : "destructive"}
@@ -188,56 +222,43 @@ export default function Chat() {
                   {isVideoEnabled ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
                 </Button>
             </div>
+            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-background/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-foreground border border-border">
+              You
+            </div>
           </div>
         </div>
 
-        {/* Right Section: Chat Area */}
-        <div className="flex-1 flex flex-col bg-card border border-border rounded-sm min-w-0 shadow-sm overflow-hidden">
-          <div className="flex-1 overflow-hidden p-6">
-             {chatState === 'idle' ? (
-                <div className="space-y-6 max-w-lg">
-                  <h2 className="text-3xl font-bold tracking-tight">Welcome to Umingle.</h2>
-                  <div className="space-y-3 text-lg">
-                    <div className="flex items-center gap-3 font-bold text-[#222]">
-                      <div className="w-6 h-6 rounded-full border-2 border-[#222] flex items-center justify-center text-[10px]">18</div>
-                      <span className="text-primary border-b border-primary">You must be 18+</span>
-                    </div>
-                    <p className="text-[#333]">No nudity, hate speech, or harassment</p>
-                    <p className="text-[#333]">Your webcam must show you, live</p>
-                    <p className="text-[#333]">Do not ask for gender. This is not a dating site</p>
-                    <p className="text-[#333]">Violators will be banned</p>
-                  </div>
-                </div>
-             ) : (
-                <ChatBox 
-                  messages={messages} 
-                  onSendMessage={sendMessage} 
-                  onTyping={sendTyping}
-                  isPartnerTyping={isTyping}
-                  disabled={chatState !== 'connected'} 
-                  className="h-full border-none bg-transparent p-0"
-                />
-             )}
+        {/* Right Section: Large Chat Area */}
+        <div className="flex-1 flex flex-col bg-card border border-border rounded-lg min-w-0 shadow-sm overflow-hidden">
+          <div className="flex-1 overflow-hidden">
+             <ChatBox 
+                messages={messages} 
+                onSendMessage={sendMessage} 
+                onTyping={sendTyping}
+                isPartnerTyping={isTyping}
+                disabled={chatState !== 'connected'} 
+                className="h-full border-none bg-transparent"
+              />
           </div>
           
-          {/* Bottom Bar: Input & Controls */}
-          <div className="h-20 px-3 bg-white border-t border-border flex items-center gap-3 shrink-0">
+          {/* Bottom Control Bar */}
+          <div className="h-20 px-3 bg-card border-t border-border flex items-center gap-3 shrink-0">
              <Button 
                 onClick={() => {
                   if (chatState === 'idle') startChat();
                   else nextPartner();
                 }}
-                className="h-14 min-w-[100px] bg-primary hover:bg-primary/90 text-white font-bold rounded-md flex flex-col items-center justify-center gap-0.5 shadow-md"
+                className="h-14 min-w-[120px] bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-primary/20 transition-all active:scale-95"
               >
-                <span className="text-lg leading-none">{chatState === 'idle' ? 'Start' : 'Next'}</span>
-                <span className="text-[10px] font-normal opacity-80">Esc</span>
+                <span className="text-lg uppercase tracking-wider">{chatState === 'idle' ? 'Start' : 'Next'}</span>
+                <span className="text-[10px] font-normal opacity-50">Esc</span>
               </Button>
               
               <div className="flex-1 relative flex items-center gap-2">
                 <input 
                    disabled={chatState !== 'connected'}
-                   placeholder=""
-                   className="flex-1 h-14 bg-white border border-border rounded-md px-4 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all text-lg"
+                   placeholder="Type a message..."
+                   className="flex-1 h-14 bg-background border border-border rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base"
                    onKeyDown={(e) => {
                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                        sendMessage(e.currentTarget.value);
@@ -247,7 +268,14 @@ export default function Chat() {
                 />
                 <button 
                   disabled={chatState !== 'connected'}
-                  className="absolute right-4 text-primary opacity-80 hover:opacity-100 transition-opacity disabled:opacity-30"
+                  onClick={() => {
+                    const input = document.querySelector('input') as HTMLInputElement;
+                    if (input && input.value.trim()) {
+                      sendMessage(input.value);
+                      input.value = "";
+                    }
+                  }}
+                  className="absolute right-4 text-primary hover:text-primary/80 transition-colors disabled:opacity-30 p-2"
                 >
                   <Send className="w-6 h-6" />
                 </button>
