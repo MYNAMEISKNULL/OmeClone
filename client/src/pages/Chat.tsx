@@ -47,9 +47,7 @@ export default function Chat() {
     if (chatState === 'connected') {
       playSound('success');
       triggerHaptic('heavy');
-      if (window.innerWidth < 768) {
-        setIsMobileChatOpen(true);
-      }
+      // Auto-open chat drawer on mobile removed as per user request
     }
   }, [chatState]);
 
